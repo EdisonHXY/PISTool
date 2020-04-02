@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="vsz">
+      <UniqueIdentifier>{4a933513-7b57-4886-8047-97e33e5ab4d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="对外接口">
+      <UniqueIdentifier>{dc9a5851-ec75-4955-ac67-4e258d3fa256}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MFCUI">
+      <UniqueIdentifier>{e032f7a9-f971-4494-82a9-0512263e3d80}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FileHandle">
+      <UniqueIdentifier>{fb96674f-da4d-49c2-b36d-bf08840bd56e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="PISTools.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="vsz\VszManager.cpp">
+      <Filter>vsz</Filter>
+    </ClCompile>
+    <ClCompile Include="MFCUI\UIHandler.cpp">
+      <Filter>MFCUI</Filter>
+    </ClCompile>
+    <ClCompile Include="MFCUI\MFCUI_Interface.cpp">
+      <Filter>MFCUI</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="PISTools.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="vsz\VSZip.h">
+      <Filter>vsz</Filter>
+    </ClInclude>
+    <ClInclude Include="vsz\VszManager.h">
+      <Filter>vsz</Filter>
+    </ClInclude>
+    <ClInclude Include="对外接口\All_Interface.h">
+      <Filter>对外接口</Filter>
+    </ClInclude>
+    <ClInclude Include="MFCUI\UIHandler.h">
+      <Filter>MFCUI</Filter>
+    </ClInclude>
+    <ClInclude Include="对外接口\PISHeader.h">
+      <Filter>对外接口</Filter>
+    </ClInclude>
+    <ClInclude Include="对外接口\MFCUI_Interface.h">
+      <Filter>对外接口</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="PISTools.def">
+      <Filter>源文件</Filter>
+    </None>
+    <None Include="res\PISTools.rc2">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="vsz\VSZip.dll">
+      <Filter>vsz</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="PISTools.rc">
+      <Filter>资源文件</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="vsz\VSZip.lib">
+      <Filter>vsz</Filter>
+    </Library>
+  </ItemGroup>
+</Project>
