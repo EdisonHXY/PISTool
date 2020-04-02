@@ -25,6 +25,12 @@
     <Filter Include="FileHandle">
       <UniqueIdentifier>{fb96674f-da4d-49c2-b36d-bf08840bd56e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="数据库操作">
+      <UniqueIdentifier>{535606c9-d4a4-4680-9ae9-f368b9c1c443}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="控制台">
+      <UniqueIdentifier>{f3ee2f63-f3a9-4350-9cd8-7f71bcd9a0a7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -44,6 +50,18 @@
     </ClCompile>
     <ClCompile Include="MFCUI\MFCUI_Interface.cpp">
       <Filter>MFCUI</Filter>
+    </ClCompile>
+    <ClCompile Include="数据库操作\DataBase_Interface.cpp">
+      <Filter>数据库操作</Filter>
+    </ClCompile>
+    <ClCompile Include="数据库操作\DataBaseHandle.cpp">
+      <Filter>数据库操作</Filter>
+    </ClCompile>
+    <ClCompile Include="控制台\Console_Interface.cpp">
+      <Filter>控制台</Filter>
+    </ClCompile>
+    <ClCompile Include="控制台\ConsoleHandle.cpp">
+      <Filter>控制台</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -76,6 +94,18 @@
     </ClInclude>
     <ClInclude Include="对外接口\MFCUI_Interface.h">
       <Filter>对外接口</Filter>
+    </ClInclude>
+    <ClInclude Include="数据库操作\DataBaseHandle.h">
+      <Filter>数据库操作</Filter>
+    </ClInclude>
+    <ClInclude Include="对外接口\DataBase_Interface.h">
+      <Filter>对外接口</Filter>
+    </ClInclude>
+    <ClInclude Include="对外接口\Console_Interface.h">
+      <Filter>对外接口</Filter>
+    </ClInclude>
+    <ClInclude Include="控制台\ConsoleHandle.h">
+      <Filter>控制台</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

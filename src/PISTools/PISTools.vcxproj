@@ -50,9 +50,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v120_xp</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
     <UseOfMfc>Static</UseOfMfc>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -209,6 +209,10 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="vsz\VszManager.cpp" />
+    <ClCompile Include="控制台\ConsoleHandle.cpp" />
+    <ClCompile Include="控制台\Console_Interface.cpp" />
+    <ClCompile Include="数据库操作\DataBaseHandle.cpp" />
+    <ClCompile Include="数据库操作\DataBase_Interface.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MFCUI\UIHandler.h" />
@@ -219,8 +223,12 @@
     <ClInclude Include="vsz\VSZip.h" />
     <ClInclude Include="vsz\VszManager.h" />
     <ClInclude Include="对外接口\All_Interface.h" />
+    <ClInclude Include="对外接口\Console_Interface.h" />
+    <ClInclude Include="对外接口\DataBase_Interface.h" />
     <ClInclude Include="对外接口\MFCUI_Interface.h" />
     <ClInclude Include="对外接口\PISHeader.h" />
+    <ClInclude Include="控制台\ConsoleHandle.h" />
+    <ClInclude Include="数据库操作\DataBaseHandle.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PISTools.def" />

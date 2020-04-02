@@ -77,6 +77,12 @@ BEGIN_MESSAGE_MAP(CTestToolsDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON8, &CTestToolsDlg::OnBnClickedButton8)
 	ON_BN_CLICKED(IDC_BUTTON9, &CTestToolsDlg::OnBnClickedButton9)
 	ON_BN_CLICKED(IDC_BUTTON10, &CTestToolsDlg::OnBnClickedButton10)
+	ON_BN_CLICKED(IDC_CHECK_Console, &CTestToolsDlg::OnBnClickedCheck1)
+	ON_BN_CLICKED(IDC_BUTTON13, &CTestToolsDlg::OnBnClickedButton13)
+	ON_BN_CLICKED(IDC_BUTTON14, &CTestToolsDlg::OnBnClickedButton14)
+	ON_BN_CLICKED(IDC_BUTTON11, &CTestToolsDlg::OnBnClickedButton11)
+	ON_BN_CLICKED(IDC_BUTTON12, &CTestToolsDlg::OnBnClickedButton12)
+	ON_BN_CLICKED(IDC_BUTTON15, &CTestToolsDlg::OnBnClickedButton15)
 END_MESSAGE_MAP()
 
 
@@ -113,8 +119,25 @@ BOOL CTestToolsDlg::OnInitDialog()
 
 	// TODO: 在此添加额外的初始化代码
 	
-	
-	
+	CEdit *ed = (CEdit*)GetDlgItem(IDC_EDIT_SQL);
+	if (!ed)
+	{
+		return 0;
+	}
+	COleDateTime tm = COleDateTime::GetCurrentTime();
+
+	CString timStr = tm.Format("%Y-%m-%d %H:%M:%S");
+	CString strCmd;
+	strCmd.Format("Insert Into %s "
+		"(List_ID, List_Title, List_Status, Update_Time, "
+		"Delete_Date,Editor_ID, Edit_Time, "
+		"Scope_Edit_Time, \"Audit\", List_MD5, Import_Line) "
+		"values ('%s', '%s', %d, '%s', '%s', '%s', '%s', "
+		" '%s', %d, '%s', '%s')", "Default_List",
+		"100", "测试100", 1, timStr,
+		timStr,"ocean", timStr,
+		timStr,0, "szzz", "L999");
+	ed->SetWindowText(strCmd);
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -304,4 +327,210 @@ void CTestToolsDlg::OnBnClickedButton10()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	OC_CancelCloseTip(m_hWnd);
+}
+
+
+void CTestToolsDlg::OnBnClickedCheck1()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	CButton *btn = (CButton *)GetDlgItem(IDC_CHECK_Console);
+	if (btn)
+	{
+		 btn->GetCheck() == 1 ? OC_OpenConsole(_T("测试控制台")) : OC_CloseConsole();
+	}
+
+	OC_WriteConsole("测试info");
+	OC_WriteConsole("测试warnning",WRITETPYE_WARN);
+	OC_WriteConsole("测试error",WRITETPYE_ERROR);
+
+
+}
+
+
+void CTestToolsDlg::OnBnClickedButton13()
+{
+	// TODO: 在此添加控件通知处理程序代码
+
+	OC_SetConsoleColor(WRITETPYE_ERROR, FOREGROUND_GREEN | BACKGROUND_RED);
+	OC_SetConsoleColor(WRITETPYE_INFO, FOREGROUND_GREEN | BACKGROUND_BLUE);
+	OC_SetConsoleColor(WRITETPYE_WARN, FOREGROUND_RED | BACKGROUND_BLUE);
+
+}
+
+
+void CTestToolsDlg::OnBnClickedButton14()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	OC_SetConsoleOutPattern(_T("只显示时分秒[%H:%M:%S]"));
+}
+
+
+void CTestToolsDlg::OnBnClickedButton11()
+{
+	// TODO: 在此添加控件通知处理程序代码
+
+	CEdit *ed = (CEdit*)GetDlgItem(IDC_EDIT_SQL);
+	if (!ed)
+	{
+		return;
+	}
+	OC_DB_PARAMS p;
+	p.addressStr = "192.168.1.109";
+	p.passwordStr = "ghyt2001";
+	p.usrName = "sa";
+	p.name = "pis";
+	//p.timeOut = 5;
+	OC_SetDataBaseParams(0, p);
+
+	CString sqlStr;
+	ed->GetWindowText(sqlStr);
+	CString errStr;
+	bool bRet = OC_ExectSql(0, sqlStr, errStr);
+
+	
+	OC_OpenConsole(_T("测试控制台"));
+	
+
+	CString tipMsg;
+	tipMsg.Format(_T("执行结果：%s,%s"),bRet ? "Success" : "Fail",bRet ? "":errStr);
+	OC_WriteConsole(tipMsg, bRet ? WRITETPYE_INFO: WRITETPYE_ERROR);
+}
+
+
+void CTestToolsDlg::OnBnClickedButton12()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	OC_OpenConsole(_T("测试控制台"));
+
+	CStringArray keyArr;
+
+	keyArr.Add("List_ID");
+	keyArr.Add("List_Title");
+	keyArr.Add("Editor_ID");
+
+	map<CString, CStringArray > valueList;
+	CString errStr="";
+	CString sqlStr = "Select * from Default_List";
+	
+	CEdit *ed = (CEdit*)GetDlgItem(IDC_EDIT_SQL);
+	if (ed)
+	{
+		ed->SetWindowText(sqlStr);
+	}
+
+
+
+	bool bRet = OC_ExectSelectSql(0, sqlStr,keyArr,valueList, errStr);
+
+	
+
+
+	CString tipMsg;
+	tipMsg.Format(_T("执行结果：%s,%s"), bRet ? "Success" : "Fail", bRet ? "" : errStr);
+	OC_WriteConsole(tipMsg, bRet ? WRITETPYE_INFO : WRITETPYE_ERROR);
+
+	if (bRet)
+	{
+		tipMsg = _T("key:");
+		std::map<CString, CStringArray>::iterator it ;
+		for (unsigned int i = 0;i < keyArr.GetSize();++i)
+		{
+			CString key = keyArr[i];
+			
+			it = valueList.find(key);
+
+			if (it != valueList.end())
+			{
+				
+				tipMsg = "key:" + key;
+				tipMsg += " value:";
+				
+				const CStringArray &strList = it->second;
+
+				for (unsigned int j = 0 ; j < strList.GetSize();++j)
+				{
+					tipMsg += strList[j] + " ";
+
+				}
+
+			}
+			else {
+				tipMsg.Format(_T("key=%s,value=无"), key);
+			}
+			
+			OC_WriteConsole(tipMsg);
+		}
+
+	
+
+	}
+
+}
+
+
+void CTestToolsDlg::OnBnClickedButton15()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	OC_OpenConsole(_T("测试控制台"));
+
+	CStringArray keyArr;
+
+	keyArr.Add("List_ID");
+	keyArr.Add("Device_Pos");
+	keyArr.Add("Station_Code");
+	keyArr.Add("Line_Code");
+
+	map<CString, CStringArray > valueList;
+	CString errStr = "";
+	CString sqlStr ;
+	sqlStr = "Select * from Default_List_Scope where List_ID = 00001";
+	CEdit *ed = (CEdit*)GetDlgItem(IDC_EDIT_SQL);
+	if (ed)
+	{
+		ed->SetWindowText(sqlStr);
+	}
+
+	bool bRet = OC_ExectSelectSql(0, sqlStr, keyArr, valueList, errStr);
+
+
+	CString tipMsg;
+	tipMsg.Format(_T("执行结果：%s,%s"), bRet ? "Success" : "Fail", bRet ? "" : errStr);
+	OC_WriteConsole(tipMsg, bRet ? WRITETPYE_INFO : WRITETPYE_ERROR);
+
+	if (bRet)
+	{
+		tipMsg = _T("key:");
+		std::map<CString, CStringArray>::iterator it;
+		for (unsigned int i = 0; i < keyArr.GetSize(); ++i)
+		{
+			CString key = keyArr[i];
+
+			it = valueList.find(key);
+
+			if (it != valueList.end())
+			{
+
+				tipMsg = "key:" + key;
+				tipMsg += " value:";
+
+				const CStringArray &strList = it->second;
+
+				for (unsigned int j = 0; j < strList.GetSize(); ++j)
+				{
+					tipMsg += strList[j] + " ";
+
+				}
+
+			}
+			else {
+				tipMsg.Format(_T("key=%s,value=无"), key);
+			}
+
+			OC_WriteConsole(tipMsg);
+		}
+
+
+
+	}
+
 }
