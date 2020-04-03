@@ -2,7 +2,7 @@
 #include "../对外接口/DataBase_Interface.h"
 
 #include "DataBaseHandle.h"
-static vector<CDataBaseHandle*> g_groupDBList; //保存所有创建的数据库类
+static CDataBaseHandleGroup g_DB_group;
 
 int OC_SetDataBaseParams(int nIndex,  OC_DB_PARAMS params)
 {
@@ -11,7 +11,7 @@ int OC_SetDataBaseParams(int nIndex,  OC_DB_PARAMS params)
 		return OC_ERROR_CODE_PARAM;
 	}
 
-	int nSize = g_groupDBList.size();
+	int nSize = g_DB_group.m_groupDBList.size();
 	if (nIndex >= nSize)
 	{
 		CDataBaseHandle *db = new CDataBaseHandle(nIndex);
@@ -20,7 +20,7 @@ int OC_SetDataBaseParams(int nIndex,  OC_DB_PARAMS params)
 			return OC_ERROR_CODE_FAIL;
 		}
 		db->SetDataBaseParams(params);
-		g_groupDBList.push_back(db);
+		g_DB_group.m_groupDBList.push_back(db);
 	}
 
 	return OC_ERROR_CODE_NONE;
@@ -28,33 +28,35 @@ int OC_SetDataBaseParams(int nIndex,  OC_DB_PARAMS params)
 
  void OC_DeleteAllDataBase()
 {
-	 for (unsigned int i = 0 ; i < g_groupDBList.size();++i)
-	 {
-		 CDataBaseHandle *db = g_groupDBList[i];
-		 if (db)
-		 {
-			 delete db;
-			 db = NULL;
-		 }
-	 }
+	 g_DB_group.DeletAllDB();
 }
 
  bool OC_ExectSql(int nIndex, CString sqlStr, CString &errorStr)
  {
-	 if (nIndex >= g_groupDBList.size())
+	 if (nIndex >= g_DB_group.m_groupDBList.size())
 	 {
 		 errorStr = _T("未设置数据库的参数 需要OC_SetDataBaseParams");
 		 return false;
 	 }
-	 return g_groupDBList[nIndex]->ExectSql(sqlStr, errorStr);
+	 return  g_DB_group.m_groupDBList[nIndex]->ExectSql(sqlStr, errorStr);
  }
 
- bool OC_ExectSelectSql(int nIndex, CString sqlStr, const CStringArray &keyList, map< CString, CStringArray > &valueList, CString &errorStr)
+ bool OC_ExectSelectSql(int nIndex, CString sqlStr, const CStringArray &keyList, map< CString, CStringArray *> &valueList, CString &errorStr)
  {
-	 if (nIndex >= g_groupDBList.size())
+	 if (nIndex >= g_DB_group.m_groupDBList.size())
 	 {
 		 errorStr = _T("未设置数据库的参数 需要OC_SetDataBaseParams");
 		 return false;
 	 }
-	 return g_groupDBList[nIndex]->ExectSql(sqlStr, keyList,valueList, errorStr);
+	 return  g_DB_group.m_groupDBList[nIndex]->ExectSql(sqlStr, keyList,valueList, errorStr);
+ }
+
+ bool OC_ReleaseBuffer(int nIndex, map< CString, CStringArray* > &valueList)
+ {
+	 if (nIndex >= g_DB_group.m_groupDBList.size())
+	 {
+		 //errorStr = _T("未设置数据库的参数 需要OC_SetDataBaseParams");
+		 return false;
+	 }
+	 return g_DB_group.m_groupDBList[nIndex]->ReleaseBuffer(valueList);
  }

@@ -408,7 +408,10 @@ void CTestToolsDlg::OnBnClickedButton12()
 	keyArr.Add("List_Title");
 	keyArr.Add("Editor_ID");
 
-	map<CString, CStringArray > valueList;
+	map<CString, CStringArray *> valueList;
+	
+
+
 	CString errStr="";
 	CString sqlStr = "Select * from Default_List";
 	
@@ -432,7 +435,7 @@ void CTestToolsDlg::OnBnClickedButton12()
 	if (bRet)
 	{
 		tipMsg = _T("key:");
-		std::map<CString, CStringArray>::iterator it ;
+		std::map<CString, CStringArray* >::iterator it ;
 		for (unsigned int i = 0;i < keyArr.GetSize();++i)
 		{
 			CString key = keyArr[i];
@@ -445,11 +448,11 @@ void CTestToolsDlg::OnBnClickedButton12()
 				tipMsg = "key:" + key;
 				tipMsg += " value:";
 				
-				const CStringArray &strList = it->second;
+				 CStringArray *strList = it->second;
 
-				for (unsigned int j = 0 ; j < strList.GetSize();++j)
+				for (unsigned int j = 0 ; j < strList->GetSize();++j)
 				{
-					tipMsg += strList[j] + " ";
+					tipMsg += (*strList)[j] + " ";
 
 				}
 
@@ -465,6 +468,7 @@ void CTestToolsDlg::OnBnClickedButton12()
 
 	}
 
+	OC_ReleaseBuffer(0, valueList);
 }
 
 
@@ -480,7 +484,7 @@ void CTestToolsDlg::OnBnClickedButton15()
 	keyArr.Add("Station_Code");
 	keyArr.Add("Line_Code");
 
-	map<CString, CStringArray > valueList;
+	map<CString, CStringArray *> valueList;
 	CString errStr = "";
 	CString sqlStr ;
 	sqlStr = "Select * from Default_List_Scope where List_ID = 00001";
@@ -500,7 +504,7 @@ void CTestToolsDlg::OnBnClickedButton15()
 	if (bRet)
 	{
 		tipMsg = _T("key:");
-		std::map<CString, CStringArray>::iterator it;
+		std::map<CString, CStringArray*>::iterator it;
 		for (unsigned int i = 0; i < keyArr.GetSize(); ++i)
 		{
 			CString key = keyArr[i];
@@ -513,11 +517,11 @@ void CTestToolsDlg::OnBnClickedButton15()
 				tipMsg = "key:" + key;
 				tipMsg += " value:";
 
-				const CStringArray &strList = it->second;
+				CStringArray *strList = it->second;
 
-				for (unsigned int j = 0; j < strList.GetSize(); ++j)
+				for (unsigned int j = 0; j < strList->GetSize(); ++j)
 				{
-					tipMsg += strList[j] + " ";
+					tipMsg += (*strList)[j] + " ";
 
 				}
 
@@ -532,5 +536,8 @@ void CTestToolsDlg::OnBnClickedButton15()
 
 
 	}
+
+
+	OC_ReleaseBuffer(0, valueList);
 
 }

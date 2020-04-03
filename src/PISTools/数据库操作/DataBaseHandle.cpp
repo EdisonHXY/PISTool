@@ -8,6 +8,7 @@ CDataBaseHandle::CDataBaseHandle(int tag)
 	m_params.timeOut = 0;
 	//memset(&m_params, 0, sizeof(m_params));
 	m_iDBType = DB_SQLSERVER;
+	m_isReleaseBuffer = true;
 }
 
 
@@ -71,8 +72,15 @@ bool CDataBaseHandle::ExectSql(CString sqlStr, CString &errorStr)
 	return bRet;
 }
 
-bool CDataBaseHandle::ExectSql(CString sqlStr, const CStringArray &keyList, map< CString, CStringArray > &valueList, CString &errorStr)
+bool CDataBaseHandle::ExectSql(CString sqlStr, const CStringArray &keyList, map< CString, CStringArray * > &valueList, CString &errorStr)
 {
+
+	if (!m_isReleaseBuffer)
+	{
+		errorStr = "未释放上一次的内存，请调要OC_ReleaseBuffer";
+		return false;
+	}
+
 	_ConnectionPtr pConn;
 	bool bRet = false;
 	errorStr.Empty();
@@ -86,12 +94,21 @@ bool CDataBaseHandle::ExectSql(CString sqlStr, const CStringArray &keyList, map<
 		//read list info
 		pRs.CreateInstance(__uuidof(Recordset));
 		pRs->Open((_bstr_t)sqlStr, pConn.GetInterfacePtr(), adOpenStatic, adLockReadOnly, adCmdText);
+		map<CString, CStringArray * > ::iterator it;
 		while (!pRs->adoEOF)
 		{
 			for (unsigned int i = 0; i < keyList.GetSize(); i++)
 			{
 				CString keyStr = keyList[i];
-				valueList[keyStr].Add(GetFieldValue(pRs, keyStr.GetBuffer()));
+
+				it = valueList.find(keyStr);
+				if (it == valueList.end())
+				{
+					valueList[keyStr] = new CStringArray;
+					m_isReleaseBuffer = false;
+				}
+				
+				valueList[keyStr]->Add(GetFieldValue(pRs, keyStr.GetBuffer()));
 			}
 			pRs->MoveNext();
 		}
@@ -106,6 +123,27 @@ bool CDataBaseHandle::ExectSql(CString sqlStr, const CStringArray &keyList, map<
 	}
 
 	return bRet;
+}
+
+bool CDataBaseHandle::ReleaseBuffer(map< CString, CStringArray* > &valueList)
+{
+	map< CString, CStringArray* > ::iterator it = valueList.begin();
+
+	while (it != valueList.end())
+	{
+		CStringArray *arr = it->second;
+		if (arr)
+		{
+			delete arr;
+			arr = NULL;
+			
+		}
+		it++;
+	}
+
+	m_isReleaseBuffer = true;
+	valueList.clear();
+	return true;
 }
 
 _ConnectionPtr CDataBaseHandle::GetConnectPtr()
@@ -290,3 +328,26 @@ DATE CDataBaseHandle::GetDateField(_RecordsetPtr pRs, _variant_t vtField)
 	return dateValue;
 }
 
+
+CDataBaseHandleGroup::CDataBaseHandleGroup()
+{
+	m_groupDBList.clear();
+}
+
+CDataBaseHandleGroup::~CDataBaseHandleGroup()
+{
+	DeletAllDB();
+}
+
+void CDataBaseHandleGroup::DeletAllDB()
+{
+	for (unsigned int i = 0; i < m_groupDBList.size(); ++i)
+	{
+		CDataBaseHandle *db = m_groupDBList[i];
+		if (db)
+		{
+			delete db;
+			db = NULL;
+		}
+	}
+}
