@@ -213,6 +213,9 @@
     <ClCompile Include="控制台\Console_Interface.cpp" />
     <ClCompile Include="数据库操作\DataBaseHandle.cpp" />
     <ClCompile Include="数据库操作\DataBase_Interface.cpp" />
+    <ClCompile Include="日志\LogHandle.cpp" />
+    <ClCompile Include="日志\LogToFile.cpp" />
+    <ClCompile Include="日志\Log_Interface.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MFCUI\UIHandler.h" />
@@ -225,10 +228,13 @@
     <ClInclude Include="对外接口\All_Interface.h" />
     <ClInclude Include="对外接口\Console_Interface.h" />
     <ClInclude Include="对外接口\DataBase_Interface.h" />
+    <ClInclude Include="对外接口\Log_Interface.h" />
     <ClInclude Include="对外接口\MFCUI_Interface.h" />
     <ClInclude Include="对外接口\PISHeader.h" />
     <ClInclude Include="控制台\ConsoleHandle.h" />
     <ClInclude Include="数据库操作\DataBaseHandle.h" />
+    <ClInclude Include="日志\LogHandle.h" />
+    <ClInclude Include="日志\LogToFile.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PISTools.def" />

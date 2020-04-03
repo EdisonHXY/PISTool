@@ -7,3 +7,6 @@
 #include "DataBase_Interface.h"
 
 #include "Console_Interface.h"
+
+
+#include "Log_Interface.h"

@@ -83,6 +83,7 @@ BEGIN_MESSAGE_MAP(CTestToolsDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON11, &CTestToolsDlg::OnBnClickedButton11)
 	ON_BN_CLICKED(IDC_BUTTON12, &CTestToolsDlg::OnBnClickedButton12)
 	ON_BN_CLICKED(IDC_BUTTON15, &CTestToolsDlg::OnBnClickedButton15)
+	ON_BN_CLICKED(IDC_BUTTON16, &CTestToolsDlg::OnBnClickedButton16)
 END_MESSAGE_MAP()
 
 
@@ -539,5 +540,21 @@ void CTestToolsDlg::OnBnClickedButton15()
 
 
 	OC_ReleaseBuffer(0, valueList);
+
+}
+
+
+void CTestToolsDlg::OnBnClickedButton16()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	OC_InitLog(0);
+	for (unsigned int i = 0 ; i < 100;++i)
+	{
+		CString tmpStr;
+		tmpStr.Format(_T("测试日志=%d"), i);
+
+		OC_WritLog(0, tmpStr);
+	}
+
 
 }

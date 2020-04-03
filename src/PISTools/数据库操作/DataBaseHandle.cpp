@@ -350,4 +350,5 @@ void CDataBaseHandleGroup::DeletAllDB()
 			db = NULL;
 		}
 	}
+	m_groupDBList.clear();
 }

@@ -31,6 +31,9 @@
     <Filter Include="控制台">
       <UniqueIdentifier>{f3ee2f63-f3a9-4350-9cd8-7f71bcd9a0a7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="日志">
+      <UniqueIdentifier>{2f9d22f7-32c7-43d7-99cd-23268064fdb0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -62,6 +65,15 @@
     </ClCompile>
     <ClCompile Include="控制台\ConsoleHandle.cpp">
       <Filter>控制台</Filter>
+    </ClCompile>
+    <ClCompile Include="日志\LogHandle.cpp">
+      <Filter>日志</Filter>
+    </ClCompile>
+    <ClCompile Include="日志\LogToFile.cpp">
+      <Filter>日志</Filter>
+    </ClCompile>
+    <ClCompile Include="日志\Log_Interface.cpp">
+      <Filter>日志</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -106,6 +118,15 @@
     </ClInclude>
     <ClInclude Include="控制台\ConsoleHandle.h">
       <Filter>控制台</Filter>
+    </ClInclude>
+    <ClInclude Include="日志\LogHandle.h">
+      <Filter>日志</Filter>
+    </ClInclude>
+    <ClInclude Include="日志\LogToFile.h">
+      <Filter>日志</Filter>
+    </ClInclude>
+    <ClInclude Include="对外接口\Log_Interface.h">
+      <Filter>对外接口</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

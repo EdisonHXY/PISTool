@@ -48,4 +48,5 @@ public:
 	afx_msg void OnBnClickedButton11();
 	afx_msg void OnBnClickedButton12();
 	afx_msg void OnBnClickedButton15();
+	afx_msg void OnBnClickedButton16();
 };
