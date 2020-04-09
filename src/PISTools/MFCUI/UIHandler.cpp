@@ -257,3 +257,19 @@ void CUIHandler::ReadIniSettting(vector<OC_INI_INFO> &listInfo, CString filePath
 		::GetPrivateProfileString(info.headerName, info.keyName, info.defaultName,info.valueName.GetBuffer(MAX_PATH),MAX_PATH, filePath);
 	}
 }
+
+
+BOOL CUIHandler::IsMutexCreated(CString strMutex)
+{
+	DWORD dwReturn;
+
+	//首先判断是否已经运行，只允许一个实例存在
+	HANDLE hMutex = CreateMutex(NULL, true, strMutex);
+	dwReturn = GetLastError();
+	if (!hMutex || dwReturn == ERROR_ALREADY_EXISTS)
+	{
+		//AfxMessageBox("不能同时运行InfoTV监视程序!", MB_OK | MB_ICONINFORMATION);
+		return true;
+	}
+	return false;
+}

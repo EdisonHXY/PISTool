@@ -18,7 +18,10 @@ public:
 	
 	 //读取配置文件
 	 void ReadIniSettting(vector<OC_INI_INFO> &listInfo, CString filePath);
-
+	
+	 //唯一性
+	static BOOL IsMutexCreated(CString strMutex);
+	 
 	//保存配置文件
 	 void SaveIniSetting(vector<OC_INI_INFO> &listInfo, CString filePath);
 

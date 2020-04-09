@@ -48,6 +48,11 @@ int OC_SaveCurrentCfgToIni(vector<OC_INI_INFO> &listInfo, CString fileName)
 	return OC_ERROR_CODE_NONE;
 }
 
+ BOOL OC_IsMutexCreated(CString strMutex)
+{
+	 return CUIHandler::IsMutexCreated(strMutex);
+}
+
 int OC_ReadCfgFromIni(vector<OC_INI_INFO>  &listInfo, CString filePath)
 {
 

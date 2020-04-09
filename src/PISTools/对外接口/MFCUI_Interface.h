@@ -47,3 +47,6 @@ DllExport int OC_ReadCurrentCfgFromIni(vector<OC_INI_INFO> &listInfo, CString fi
 //保存当前目录配置文件
 DllExport int OC_SaveCurrentCfgToIni(vector<OC_INI_INFO> &listInfo, CString fileName);
 
+//设置程序的唯一性
+DllExport BOOL OC_IsMutexCreated(CString strMutex);
+
