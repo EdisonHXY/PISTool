@@ -199,6 +199,8 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ExcelAccess\ExcelAccess.cpp" />
+    <ClCompile Include="ExcelAccess\Excel_Interface.cpp" />
     <ClCompile Include="MFCUI\MFCUI_Interface.cpp" />
     <ClCompile Include="MFCUI\UIHandler.cpp" />
     <ClCompile Include="PISTools.cpp" />
@@ -218,6 +220,7 @@
     <ClCompile Include="日志\Log_Interface.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ExcelAccess\ExcelAccess.h" />
     <ClInclude Include="MFCUI\UIHandler.h" />
     <ClInclude Include="PISTools.h" />
     <ClInclude Include="Resource.h" />
@@ -228,6 +231,7 @@
     <ClInclude Include="对外接口\All_Interface.h" />
     <ClInclude Include="对外接口\Console_Interface.h" />
     <ClInclude Include="对外接口\DataBase_Interface.h" />
+    <ClInclude Include="对外接口\Excel_Interface.h" />
     <ClInclude Include="对外接口\Log_Interface.h" />
     <ClInclude Include="对外接口\MFCUI_Interface.h" />
     <ClInclude Include="对外接口\PISHeader.h" />
@@ -245,6 +249,7 @@
     <ResourceCompile Include="PISTools.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Library Include="ExcelAccess\ODBCCP32.LIB" />
     <Library Include="vsz\VSZip.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

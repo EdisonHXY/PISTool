@@ -22,9 +22,6 @@
     <Filter Include="MFCUI">
       <UniqueIdentifier>{e032f7a9-f971-4494-82a9-0512263e3d80}</UniqueIdentifier>
     </Filter>
-    <Filter Include="FileHandle">
-      <UniqueIdentifier>{fb96674f-da4d-49c2-b36d-bf08840bd56e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="数据库操作">
       <UniqueIdentifier>{535606c9-d4a4-4680-9ae9-f368b9c1c443}</UniqueIdentifier>
     </Filter>
@@ -33,6 +30,9 @@
     </Filter>
     <Filter Include="日志">
       <UniqueIdentifier>{2f9d22f7-32c7-43d7-99cd-23268064fdb0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ExcelAccess">
+      <UniqueIdentifier>{fb96674f-da4d-49c2-b36d-bf08840bd56e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -74,6 +74,12 @@
     </ClCompile>
     <ClCompile Include="日志\Log_Interface.cpp">
       <Filter>日志</Filter>
+    </ClCompile>
+    <ClCompile Include="ExcelAccess\ExcelAccess.cpp">
+      <Filter>ExcelAccess</Filter>
+    </ClCompile>
+    <ClCompile Include="ExcelAccess\Excel_Interface.cpp">
+      <Filter>ExcelAccess</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -128,6 +134,12 @@
     <ClInclude Include="对外接口\Log_Interface.h">
       <Filter>对外接口</Filter>
     </ClInclude>
+    <ClInclude Include="ExcelAccess\ExcelAccess.h">
+      <Filter>ExcelAccess</Filter>
+    </ClInclude>
+    <ClInclude Include="对外接口\Excel_Interface.h">
+      <Filter>对外接口</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="PISTools.def">
@@ -148,6 +160,9 @@
   <ItemGroup>
     <Library Include="vsz\VSZip.lib">
       <Filter>vsz</Filter>
+    </Library>
+    <Library Include="ExcelAccess\ODBCCP32.LIB">
+      <Filter>ExcelAccess</Filter>
     </Library>
   </ItemGroup>
 </Project>
