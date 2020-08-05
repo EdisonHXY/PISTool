@@ -1,0 +1,125 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="MfcUI">
+      <UniqueIdentifier>{3e2b7827-76c4-40fc-9574-e37fc3516eb9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="控制台">
+      <UniqueIdentifier>{340d54bf-f37f-45b9-866d-366df6f1c511}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="日志">
+      <UniqueIdentifier>{9b4e9d47-791f-453c-bacf-5adcc9270458}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Com">
+      <UniqueIdentifier>{d02d3004-615a-4ce5-80a6-e86357b38bda}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TCP">
+      <UniqueIdentifier>{02798dc2-2e51-4c27-80ef-94b4af42e1dd}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="MFCTool.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MFCToolDlg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MfcUI\MFCTools.h">
+      <Filter>MfcUI</Filter>
+    </ClInclude>
+    <ClInclude Include="控制台\ConsoleHandle.h">
+      <Filter>控制台</Filter>
+    </ClInclude>
+    <ClInclude Include="日志\LogHandle.h">
+      <Filter>日志</Filter>
+    </ClInclude>
+    <ClInclude Include="日志\LogToFile.h">
+      <Filter>日志</Filter>
+    </ClInclude>
+    <ClInclude Include="Com\ComHandle.h">
+      <Filter>Com</Filter>
+    </ClInclude>
+    <ClInclude Include="Com\PCOMM.H">
+      <Filter>Com</Filter>
+    </ClInclude>
+    <ClInclude Include="Tcp\Icmp.h">
+      <Filter>TCP</Filter>
+    </ClInclude>
+    <ClInclude Include="Tcp\TcpServer.h">
+      <Filter>TCP</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="MFCTool.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MFCToolDlg.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MfcUI\MFCTools.cpp">
+      <Filter>MfcUI</Filter>
+    </ClCompile>
+    <ClCompile Include="控制台\ConsoleHandle.cpp">
+      <Filter>控制台</Filter>
+    </ClCompile>
+    <ClCompile Include="日志\LogHandle.cpp">
+      <Filter>日志</Filter>
+    </ClCompile>
+    <ClCompile Include="日志\LogToFile.cpp">
+      <Filter>日志</Filter>
+    </ClCompile>
+    <ClCompile Include="Com\ComHandle.cpp">
+      <Filter>Com</Filter>
+    </ClCompile>
+    <ClCompile Include="Tcp\TcpServer.cpp">
+      <Filter>TCP</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="MFCTool.rc">
+      <Filter>资源文件</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\MFCTool.rc2">
+      <Filter>资源文件</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\MFCTool.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="Com\PCOMM.LIB">
+      <Filter>Com</Filter>
+    </Library>
+  </ItemGroup>
+</Project>
