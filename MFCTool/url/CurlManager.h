@@ -77,6 +77,8 @@ public:
 	//ftp обть
 	bool FtpDownload(const FTP_PARAMS &params);
 
+//SFtp обть ip  ="sftp://nfic@127.0.0.1/home/nfic/priv/yzx/test/20191129/2.sh" 
+	bool SFTPDown(const FTP_PARAMS &params,int &errorCode);
 
 protected:
 	static size_t	WriteCallback(void* pBuffer, size_t nSize, size_t nMemByte, void* pParam);

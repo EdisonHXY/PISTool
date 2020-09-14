@@ -479,6 +479,83 @@ bool CCurlManager::FtpDownload(const FTP_PARAMS &params)
 
 }
 
+struct SFtpFile {
+	char filename[256];
+	FILE *stream;
+};
+static size_t sFtp_fwrite(void *buffer, size_t size, size_t nmemb, void *stream)
+{
+	struct SFtpFile *out = (struct SFtpFile *)stream;
+
+	if (!out->stream)
+	{
+		out->stream = fopen(out->filename, "wb");
+		if (!out->stream)
+			return -1;
+	}
+
+	return fwrite(buffer, size, nmemb, out->stream);
+}
+
+bool CCurlManager::SFTPDown(const FTP_PARAMS &params, int &errorCode)
+{
+	CURL *curl = m_pCurl;
+	CURLcode res;
+	struct SFtpFile ftpfile;
+	strcpy(ftpfile.filename , params.localFilePath);
+	ftpfile.stream = NULL;
+
+	
+	bool bRet = false;
+
+
+	if (curl)
+	{
+		char szTmp[256] = { 0 };
+		//ip  ="sftp://nfic@127.0.0.1/home/nfic/priv/yzx/test/20191129/2.sh" 
+		sprintf(szTmp, "sftp://%s%s",params.ip,params.upLoadFileName);
+		curl_easy_setopt(curl, CURLOPT_URL, szTmp);
+
+		sprintf(szTmp, "%s:%s", params.userName, params.password);
+		curl_easy_setopt(curl, CURLOPT_USERPWD, szTmp);
+
+		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, sFtp_fwrite);
+
+		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &ftpfile);
+
+//#ifndef DISABLE_SSH_AGENT
+		curl_easy_setopt(curl, CURLOPT_SSH_AUTH_TYPES, CURLSSH_AUTH_PASSWORD);
+
+//#endif
+		//curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, false);
+		//curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, false);
+		curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L); 
+
+		res = curl_easy_perform(curl);
+
+		//curl_easy_cleanup(curl);
+		errorCode = res;
+		if (CURLE_OK != res)
+		{
+			fprintf(stderr, "curl told us %d\n", res);
+		}
+		else
+		{
+			errorCode = 0;
+			bRet = true;
+		}
+	}
+
+	if (ftpfile.stream)
+		fclose(ftpfile.stream);
+
+	
+
+	return bRet;
+}
+
+
+
 size_t CCurlManager::WriteCallback(void* pBuffer, size_t nSize, size_t nMemByte, void* pParam)
 {
 	//把下载到的数据以追加的方式写入文件(一定要有a，否则前面写入的内容就会被覆盖了)
