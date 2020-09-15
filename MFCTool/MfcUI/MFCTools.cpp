@@ -293,13 +293,30 @@ VOID CALLBACK CMFCTools::TimerFunc(HWND wnd, UINT nMsg, UINT_PTR nIDEvent, DWORD
 			OC_INI_INFO &info = m_iniListInfo[i];
 			if (info.wndControl)
 			{
-				CString str;
-				info.wndControl->GetWindowText(str);
-				if (str != info.valueName)
+				if (info.nType == InfoType_Text)
 				{
-					bEnable = true;
-					break;
+					CString str;
+					info.wndControl->GetWindowText(str);
+					if (str != info.valueName)
+					{
+						bEnable = true;
+						break;
+					}
 				}
+				else if (info.nType == InfoType_CheckBtn)
+				{
+					CButton *btn = (CButton*)info.wndControl;
+					int nCheck = btn->GetCheck();
+					int vNum = _ttoi(info.valueName);
+					vNum = vNum == 0 ? 0 : 1;
+					if (nCheck != vNum)
+					{
+
+						bEnable = true;
+						break;
+					}
+				}
+				
 
 
 			}
@@ -364,11 +381,22 @@ void CMFCTools::ReadIniSettting(vector<OC_INI_INFO> &listInfo, CString filePath)
 	for (unsigned int i = 0; i < listInfo.size(); ++i)
 	{
 		OC_INI_INFO &info = listInfo[i];
+		info.valueName = "";
 		::GetPrivateProfileString(info.headerName, info.keyName, info.defaultName, info.valueName.GetBuffer(MAX_PATH), MAX_PATH, filePath);
 
 		if (info.wndControl)
 		{
-			info.wndControl->SetWindowText(info.valueName);
+			if (info.nType == InfoType_Text)
+			{
+				info.wndControl->SetWindowText(info.valueName);
+			}
+			else if (info.nType == InfoType_CheckBtn)
+			{
+				int nNum = _ttoi(info.valueName);
+				CButton *checBtn = (CButton*)info.wndControl;
+				checBtn->SetCheck(nNum == 0 ? 0 : 1);
+			}
+			
 		}
 
 		m_iniListInfo.push_back(info);
@@ -396,7 +424,17 @@ void CMFCTools::SaveIniSetting()
 
 		if (info.wndControl)
 		{
-			info.wndControl->GetWindowText(info.valueName);
+			if (info.nType == InfoType_Text)
+			{
+				info.wndControl->GetWindowText(info.valueName);
+			}
+			else if (info.nType == InfoType_CheckBtn)
+			{
+				CButton *btn = (CButton*)info.wndControl;
+				int nCheck =  btn->GetCheck();
+				info.valueName = nCheck == 0 ? "0" : "1";
+			}
+			
 		}
 
 		::WritePrivateProfileString(info.headerName, info.keyName, info.valueName, m_iniFilePath);

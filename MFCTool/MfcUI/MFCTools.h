@@ -10,6 +10,13 @@ public:
 	static CMFCTools *GetInstance();
 	~CMFCTools();
 public:
+
+	enum InfoType
+	{
+		InfoType_CheckBtn,
+		InfoType_Text
+	};
+
 	//配置文件INI
 	typedef struct OC_INI_INFO_TAG
 	{
@@ -18,10 +25,11 @@ public:
 		CString valueName;
 		CString defaultName;
 		CWnd* wndControl;//ui控件 非空时 会进行相应的读取和存储
-		
+		InfoType nType;
 		OC_INI_INFO_TAG()
 		{
 			wndControl = NULL;
+			nType = InfoType_Text;
 		}
 
 	}OC_INI_INFO;
@@ -71,6 +79,8 @@ public:
 	//保存配置文件
 	void SaveIniSetting();
 
+	CString GetVersionInfo(CString szExeFile);
+
 protected:
 	CStatusBarCtrl *m_statusBar;
 	static long m_lOldProc;
@@ -83,7 +93,7 @@ protected:
 	static UINT m_timerID;
 private:
 	CMFCTools();
-	CString GetVersionInfo(CString szExeFile);
+	
 	static LRESULT CALLBACK NewWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 	static LRESULT CALLBACK CloseWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 	static VOID CALLBACK TimerFunc(HWND, UINT, UINT_PTR, DWORD);
