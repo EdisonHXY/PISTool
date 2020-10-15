@@ -1,0 +1,4 @@
+1. 继承InfotvHandle_Parent 实现模块的控制逻辑
+2. 在stadafx.h 中#include "InfotvDll/InfotvManager.h" 继承SYSTEM_PARAM_Parent 实现自己的数据结构
+3. 继承ConfigDlg_Parent 实现自己的设置界面
+4. 创建 CInfotvManager 并实现其中要求的方法
