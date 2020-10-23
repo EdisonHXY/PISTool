@@ -100,6 +100,10 @@ public:
 	//设置字体
 	void SetFontParam(HCONTEXT hContext, FONT_PARAM font);
 	
+
+	void SetColorParam(HCONTEXT context, FONT_PARAM font, FILL_TYPE fillType);
+	
+
 	//创建字体的xml元素
 	TiXmlElement * CreateFontElement(LPCTSTR szName, FONT_PARAM * pFont);
 	//设置背景参数并绘制

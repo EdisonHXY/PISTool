@@ -70,7 +70,7 @@ void CUDPRecive::OnReceive(int nErrorCode)
 	char szBuf[65535] = { 0 };
 	int iRec = Receive(szBuf, 65535);
 
-	if (m_rcCB)
+	if (m_rcCB && iRec > 0)
 	{
 		szBuf[iRec] = 0;
 		m_rcCB(szBuf,iRec, m_rcParam);

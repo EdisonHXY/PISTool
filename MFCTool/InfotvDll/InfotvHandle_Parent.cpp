@@ -187,4 +187,30 @@ void CInfotvHandle_Parent::SetFontParam(HCONTEXT hContext, FONT_PARAM font)
 	GDK_SetShadowWidth(hContext, font.iShadowWidth);
 }
 
+void CInfotvHandle_Parent::SetColorParam(HCONTEXT context, FONT_PARAM font, FILL_TYPE fillType)
+{
+	BYTE R, G, B;
+	R = GetRValue(font.crFace);
+	G = GetGValue(font.crFace);
+	B = GetBValue(font.crFace);
+	//set face color
+	GDK_SetFaceType(context, fillType);
+	GDK_SetFaceColor(context, RGBA(B, G, R, font.iFaceAlpha));
+	//set shadow color
+	R = GetRValue(font.crShadow);
+	G = GetGValue(font.crShadow);
+	B = GetBValue(font.crShadow);
+	GDK_SetShadowType(context, SHADOW_TYPE_OFFSET, font.iSoftness);  //not complete other type
+	GDK_SetShadowColor(context, RGBA(B, G, R, font.iShadowAlpha));
+	GDK_SetShadowAngle(context, font.iShadowAngle);
+
+	//set edge color
+	R = GetRValue(font.crEdge);
+	G = GetGValue(font.crEdge);
+	B = GetBValue(font.crEdge);
+
+	GDK_SetEdgeType(context, fillType);
+	GDK_SetEdgeColor(context, RGBA(B, G, R, font.iEdgeAlpha));
+}
+
 
