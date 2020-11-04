@@ -34,7 +34,7 @@ private:
 	WORD m_infoColor;
 	WORD m_warnColor;
 	WORD m_errorColor;
-
+	CRITICAL_SECTION m_lock;
 	CString m_formatStr;
 
 };

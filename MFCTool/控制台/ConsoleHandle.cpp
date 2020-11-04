@@ -5,7 +5,7 @@
 CConsoleHandle::CConsoleHandle()
 {
 	m_enableWriteConsole = false;
-
+	InitializeCriticalSection(&m_lock);
 	m_infoColor = FOREGROUND_GREEN | FOREGROUND_INTENSITY;
 	m_warnColor = FOREGROUND_BLUE | FOREGROUND_INTENSITY;
 	m_errorColor = FOREGROUND_RED | FOREGROUND_INTENSITY;
@@ -16,9 +16,11 @@ CConsoleHandle::CConsoleHandle()
 
 CConsoleHandle::~CConsoleHandle()
 {
+	DeleteCriticalSection(&m_lock);
 }
 bool CConsoleHandle::OpenConsole(CString titleStr)
 {
+	EnterCriticalSection(&m_lock);
 	bool bRet = AllocConsole();
 	if (bRet)
 	{
@@ -38,26 +40,28 @@ bool CConsoleHandle::OpenConsole(CString titleStr)
 	HMENU   hmenu = ::GetSystemMenu(hwnd, FALSE);//获取菜单
 	::RemoveMenu(hmenu, SC_CLOSE, MF_BYCOMMAND);//移除关闭 防止关闭控制台时 也把主程序关闭了
 
-
+	LeaveCriticalSection(&m_lock);
 	return bRet;
 }
 
 bool CConsoleHandle::CloseConsole()
 {
-
+	EnterCriticalSection(&m_lock);
 	fclose(stdout);
 	m_enableWriteConsole = false;
-	return  FreeConsole();
+	bool bRet = FreeConsole();
+	LeaveCriticalSection(&m_lock);
+	return  bRet;
 }
 
 void CConsoleHandle::WriteConsole(const char *szMsg, WRITETPYE wp /*= WRITETPYE_INFO*/)
 {
 	HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
-	if (!hOut)
+	if (!hOut || !m_enableWriteConsole)
 	{
 		return;
 	}
-
+	EnterCriticalSection(&m_lock);
 	switch (wp)
 	{
 	case WRITETPYE_INFO:
@@ -78,6 +82,7 @@ void CConsoleHandle::WriteConsole(const char *szMsg, WRITETPYE wp /*= WRITETPYE_
 	outStr.Format(_T("%s : %s \n"), preStr, szMsg);
 	fwrite(outStr, outStr.GetLength(), 1, stdout);
 	fflush(stdout);
+	LeaveCriticalSection(&m_lock);
 }
 
 void CConsoleHandle::SetOutPattern(CString formatStr)
