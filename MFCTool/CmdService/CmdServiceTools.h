@@ -71,6 +71,12 @@ public:
 	//查询操作任务执行结果 nCount 为查询的设备数量 vector 保存的是结果
 	bool QueryExecuteResult(const string &taskID, vector<TASK_LIST> &resultList,unsigned int nCount);
 
+	//查询自己发布的任务
+	bool QueryTask(const char* szDeviceID, vector<TASK_SET> &resultList);
+
+	//上传执行结果
+	bool UpLoadTASK_RESULT(const char *szDeviceId, const TASK_RESULT &taskRsult);
+
 private:
 	fLogCallBack m_logCB;
 	void *m_logCBParam;

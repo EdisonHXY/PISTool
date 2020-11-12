@@ -481,6 +481,131 @@ ErrorExit:
 	return false;
 }
 
+bool CCmdServiceTools::QueryTask(const char* szDeviceID, vector<TASK_SET> &resultList)
+{
+	int iSend, iReceive;
+	char szBuf[4096];
+	bool bRet = false;
+	PCMD_HEAD pCmd = (PCMD_HEAD)szBuf;
+	CSyncSocket sock;
+	PDEVICE_STATUS pDS;
+	//init cmd head
+	memset(pCmd, 0, sizeof(CMD_HEAD));
+	pCmd->buType = CMD_QUERY_TASK;
+	pCmd->iDataSize = sizeof(CMD_HEAD);
+	strcpy(pCmd->szHead, CMD_FLAG);
+	strcpy(pCmd->szDeviceID, szDeviceID);
+	resultList.clear();
+	do 
+	{
+	
+		//init socket
+		if (!sock.Create())
+		{
+			RecordLogToFile("CMD_QUERY_TASK: create socket error", true);
+			break;
+		}
+		if (!sock.Connect(m_ipAddress, m_port))
+		{
+			RecordLogToFile("CMD_QUERY_TASK: Connect server error", true);
+			break;
+		}
+		sock.SetTimeOut(TIMEOUT_SEND, 3000);
+
+		//send and receive
+		iSend = sock.Send(pCmd, pCmd->iDataSize);
+		if (iSend != pCmd->iDataSize)
+		{
+			RecordLogToFile("CMD_QUERY_TASK: Send query status error", true);
+			break;
+		}
+		Sleep(50);
+		iReceive = sock.Receive(szBuf, sizeof(szBuf));
+		if (!( pCmd->iDataSize == iReceive && pCmd->buAck))
+		{
+			RecordLogToFile("Receive data error", true);
+			break;
+		}
+		//parse result
+		PTASK_SET pTaskSet;
+		for (int i = 0; i < pCmd->iNum; i++)
+		{
+			pTaskSet = (PTASK_SET)(szBuf + sizeof(CMD_HEAD) + sizeof(TASK_SET) * i);
+			//pTaskList为执行结果
+			resultList.push_back(*pTaskSet);
+		}
+		bRet = true;
+
+	} while (0);
+
+	sock.Close();
+	return bRet;
+}
+
+bool CCmdServiceTools::UpLoadTASK_RESULT(const char *szDeviceId, const TASK_RESULT &taskRsult)
+{
+	int i, iSize, iDataSize, iSend, iReceive;
+	PBYTE pData = NULL;
+	PCMD_HEAD pCmd;
+	//PDEVICE_STATUS pDS;
+	//
+	CSyncSocket sock;
+	bool bRet = false;
+	//allocate memory
+	iDataSize = sizeof(CMD_HEAD) + sizeof(TASK_RESULT);
+	pData = new BYTE[iDataSize];
+	if (!pData)
+	{
+		RecordLogToFile("UpLoadTASK_RESULT: allocate memory error");
+		goto ErrorExit;
+	}
+	memset(pData, 0, iDataSize);
+
+	//init socket
+	if (!sock.Create())
+	{
+		RecordLogToFile("UpLoadTASK_RESULT: create socket error");
+		goto ErrorExit;
+	}
+	if (!sock.Connect(m_ipAddress, m_port))
+	{
+		RecordLogToFile("UpLoadTASK_RESULT: Connect server error");
+		goto ErrorExit;
+	}
+
+
+	//init cmd
+	pCmd = (PCMD_HEAD)pData;
+	pCmd->buType = CMD_FEEDBACK_TASK_RESULT;
+	strcpy(pCmd->szHead, CMD_FLAG);
+	pCmd->iNum = 1;
+	pCmd->iDataSize = iDataSize;
+
+	//pDS = (PDEVICE_STATUS)(pData + sizeof(CMD_HEAD) + sizeof(DEVICE_STATUS));
+	//pDS->dtUpdateTime = tm.operator DATE();
+	//设置pDS成员
+	memcpy(pData + sizeof(CMD_HEAD), &taskRsult, sizeof(TASK_RESULT));
+
+	//send
+	iSend = sock.Send(pCmd, pCmd->iDataSize);
+	if (iSend != pCmd->iDataSize)
+	{
+		goto ErrorExit;
+	}
+	Sleep(500);
+	iReceive = sock.Receive(pData, iDataSize);
+	bRet = true;
+ErrorExit:
+	if (pData)
+	{
+		delete pData;
+	}
+	sock.Close();
+
+
+	return bRet;
+}
+
 string CCmdServiceTools::MD5Encode32(const char* szIn, int iSize)
 {
 	char szOut[36] = { 0 };
