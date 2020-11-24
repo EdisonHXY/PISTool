@@ -222,12 +222,12 @@ void CTcpServer::HandleThread()
 
 	int iResult = select(m_soServer + 1, &fdRead,NULL,&fdExcept, &tv);
 	if (iResult == SOCKET_ERROR) {
-		printf("SOCKET_ERROR happened...\n");
+		//printf("SOCKET_ERROR happened...\n");
 		int n = WSAGetLastError();
 		return;
 	}
 	else if (iResult == 0) {
-		printf("Time limit expired\n");
+		//printf("Time limit expired\n");
 		return;
 	}
 
@@ -275,7 +275,7 @@ void CTcpServer::HandleThread()
 			getpeername(fdRead.fd_array[i], (sockaddr *)&name, &namelen);
 
 			char buf[409600] = { 0 };
-			int len = 409600;
+			int len = 409599;
 			int ret = recv(fdRead.fd_array[i], buf, len, 0);
 			
 			if (ret <= 0 ) {
