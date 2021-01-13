@@ -36,6 +36,54 @@ public:
 	static void HexToBinStr(unsigned char* hexStr, unsigned char* binStr, int lenHex);
 	static void BinStrToHex(unsigned char* binStr, unsigned char* hexStr, int lenBin);
 
+	//16进制int互转转换  356 ->bytes[0] = 0x64 bytes[1] = 0x01
+	static void intToByte2(int i, BYTE *bytes)
+	{
+		bytes[0] = (byte)(0xff & i);
+		bytes[1] = (byte)((0xff00 & i) >> 8);
+	}
+
+	static int Byte2ToInt(BYTE *bytes)
+	{
+
+		int num = bytes[0] & 0xFF;
+		num |= ((bytes[1] << 8) & 0xFF00);
+
+		return num;
+
+	}
+
+	//BYTE 与 位之间的转换
+	static void GetBitFromByte(const BYTE byData, int *bitList)
+	{
+		for (int i =0 ;i<8;++i)
+		{
+			int nTmp = (1 << i);
+			bitList[i] = ((byData & nTmp) == nTmp )? 1 : 0;
+		}
+
+	}
+
+	static void BitListToByte(BYTE *bData,const int *bitList)
+	{
+		int n = 0;
+		for (int i = 0 ; i < 8;++i)
+		{
+			int nB = bitList[i] * (1 << i);
+			n += nB;
+		}
+		*bData = n;
+	}
+	
+	// "0x14" -> 0x14
+	static void GetHexFromStr(CWnd *wd, BYTE *nByte)
+	{
+		CString strText;
+		wd->GetWindowText(strText);
+		int nTmpNum = 0;
+		sscanf(strText, "%x", &nTmpNum);
+		*nByte = nTmpNum;
+	}
 
 
 	/* 返回ch字符在sign数组中的序号 */
