@@ -216,6 +216,150 @@ BOOL CDataBaseManager::SetDownloadStatus(CString listIDStr, CString DeviceCodeSt
 
 
 
+bool CDataBaseManager::GetStationTimeInfo(vector<Station_RunTime> &staionTimeInfo)
+{
+	staionTimeInfo.clear();
+	bool nRet = false;
+	CString strItem;
+	_ConnectionPtr pConn;
+	_RecordsetPtr pRs;
+	try
+	{
+		CString strCmd = "Select Station_Code, Start_Time,Stop_Time From Station_List";
+		pConn = GetConnectPtr(m_dbIP);
+		//read list info
+		pRs.CreateInstance(__uuidof(Recordset));
+		pRs->Open((_bstr_t)strCmd, pConn.GetInterfacePtr(), adOpenStatic, adLockReadOnly, adCmdText);
+		while (!pRs->adoEOF)
+		{
+			Station_RunTime  info;
+			info.stationCode = GetFieldValue(pRs, "Station_Code");
+			info.startTimeStr = GetFieldValue(pRs, "Start_Time");
+			info.stopTimeStr = GetFieldValue(pRs, "Stop_Time");
+			staionTimeInfo.push_back(info);
+			nRet = true;
+			pRs->MoveNext();
+		}
+		pRs->Close();
+		pConn->Close();
+	}
+	catch (_com_error & e)
+	{
+
+		_bstr_t strMsg = e.Description();
+		//AfxMessageBox(strMsg, MB_OK | MB_ICONINFORMATION);
+		nRet = false;
+	}
+	return nRet;
+}
+
+bool CDataBaseManager::GetTrainInfoTime(vector<TainInfo_RunTime> &trainTimeInfoList,CString strLine)
+{
+	trainTimeInfoList.clear();
+
+	bool nRet = false;
+	CString strItem;
+	_ConnectionPtr pConn;
+	_RecordsetPtr pRs;
+	try
+	{
+		CString strCmd;
+		strCmd.Format("Select * From Train_Info where Line_Code =  '%s'",strLine) ;
+		pConn = GetConnectPtr(m_dbIP);
+		//read list info
+		pRs.CreateInstance(__uuidof(Recordset));
+		pRs->Open((_bstr_t)strCmd, pConn.GetInterfacePtr(), adOpenStatic, adLockReadOnly, adCmdText);
+		while (!pRs->adoEOF)
+		{
+			TainInfo_RunTime  info;
+			info.stationCode = GetFieldValue(pRs, "Station_Code");
+			info.treminateStaion1 = GetFieldValue(pRs, "Terminate_Station1");
+			info.firstTrain1 = GetFieldValue(pRs, "First_Train1");
+			info.lastTrain1 = GetFieldValue(pRs, "Last_Train1");
+			info.treminateStaion2 = GetFieldValue(pRs, "Terminate_Station2");
+			info.firstTrain2 = GetFieldValue(pRs, "First_Train2");
+			info.lastTrain2 = GetFieldValue(pRs, "Last_Train2");
+			trainTimeInfoList.push_back(info);
+			nRet = true;
+			pRs->MoveNext();
+		}
+		pRs->Close();
+		pConn->Close();
+	}
+	catch (_com_error & e)
+	{
+
+		_bstr_t strMsg = e.Description();
+		//AfxMessageBox(strMsg, MB_OK | MB_ICONINFORMATION);
+		nRet = false;
+	}
+	return nRet;
+}
+
+bool CDataBaseManager::SetTrainInfoTime(TainInfo_RunTime &trainTimeInfo, CString strLine)
+{
+	bool nRet = false;
+	bool bEist = false;
+	CString strItem;
+	_ConnectionPtr pConn;
+	_RecordsetPtr pRs;
+	try
+	{
+		CString strCmd;
+// 		strCmd.Format("Select Station_Code From Train_Info where Line_Code =  '%s'"
+// 			"And Terminate_Station1 = '%s' And Terminate_Station2 = '%s'"
+// 			, strLine, trainTimeInfo.treminateStaion1,trainTimeInfo.treminateStaion2);
+		strCmd.Format("Select Terminate_Station1 From Train_Info where Line_Code =  '%s'"
+			"And Station_Code = '%s'"
+			, strLine, trainTimeInfo.stationCode);
+		pConn = GetConnectPtr(m_dbIP);
+		//先查询
+		pRs.CreateInstance(__uuidof(Recordset));
+		pRs->Open((_bstr_t)strCmd, pConn.GetInterfacePtr(), adOpenStatic, adLockReadOnly, adCmdText);
+		while (!pRs->adoEOF)
+		{
+			bEist = true;
+			pRs->MoveNext();
+		}
+		pRs->Close();
+		if (!bEist)
+		{
+			pConn->Close();
+			return false;
+		}
+		//更新数据
+// 		strCmd.Format("Update Train_Info Set  First_Train1 = '%s', Last_Train1 = '%s', "
+// 			"First_Train2 = '%s', Last_Train2 = '%s' where Line_Code =  '%s'"
+// 			"And Terminate_Station1 = '%s' And Terminate_Station2 = '%s'"
+// 			, trainTimeInfo.firstTrain1,trainTimeInfo.lastTrain1,
+// 			trainTimeInfo.firstTrain2,trainTimeInfo.lastTrain2,
+// 			strLine, trainTimeInfo.treminateStaion1, trainTimeInfo.treminateStaion2);
+
+		strCmd.Format("Update Train_Info Set  First_Train1 = '%s', Last_Train1 = '%s', "
+			"First_Train2 = '%s', Last_Train2 = '%s' where Line_Code =  '%s'"
+			"And Station_Code = '%s'"
+			, trainTimeInfo.firstTrain1, trainTimeInfo.lastTrain1,
+			trainTimeInfo.firstTrain2, trainTimeInfo.lastTrain2,
+			strLine, trainTimeInfo.stationCode);
+
+
+		pConn->BeginTrans();
+		pConn->Execute((_bstr_t)strCmd, NULL, adCmdText);
+		//commit trans
+		pConn->CommitTrans();
+		nRet = true;
+		pConn->Close();
+	}
+	catch (_com_error & e)
+	{
+
+		_bstr_t strMsg = e.Description();
+		//AfxMessageBox(strMsg, MB_OK | MB_ICONINFORMATION);
+		nRet = false;
+	}
+	return nRet;
+}
+
 void CDataBaseManager::SetDBIp(CString ipAddress)
 {
 	m_dbIP = ipAddress;
@@ -337,6 +481,7 @@ int CDataBaseManager::GetDeviceDownLoadStatus(char *listID, vector<Device_DownLo
 
 _ConnectionPtr CDataBaseManager::GetConnectPtr(LPCTSTR szIP)
 {
+	CoInitialize(NULL);
 	CString strConn;
 	_bstr_t strCmd;
 	_ConnectionPtr pConn;		//连接对象
@@ -441,23 +586,24 @@ void CDataBaseManager::ReadApplyScope(_ConnectionPtr pConn, PLIST_INFO pListInfo
 	{
 		pRs.CreateInstance(__uuidof(Recordset));
 		//get device pos
-		strCmd.Format("Select Distinct Device_Pos From "+ dbListName +"_Scope where List_ID = '%s'", pListInfo->szListID);
+		strCmd.Format("Select Station_Code, Device_Pos From "+ dbListName +"_Scope where List_ID = '%s'", pListInfo->szListID);
 		pRs->Open((_bstr_t)strCmd, pConn.GetInterfacePtr(), adOpenStatic, adLockReadOnly, adCmdText);
 		while (!pRs->adoEOF)
 		{
 			pListInfo->pArrayPos->Add(GetFieldValue(pRs, "Device_Pos"));
-			pRs->MoveNext();
-		}
-		pRs->Close();
-		//get station
-		strCmd.Format("Select Station_Code, Line_Code From "+ dbListName +"_Scope where List_ID = '%s'", pListInfo->szListID);
-		pRs->Open((_bstr_t)strCmd, pConn.GetInterfacePtr(), adOpenStatic, adLockReadOnly, adCmdText);
-		while (!pRs->adoEOF)
-		{
 			pListInfo->pArrayStation->Add(GetFieldValue(pRs, "Station_Code"));
 			pRs->MoveNext();
 		}
 		pRs->Close();
+		//get station
+// 		strCmd.Format("Select Station_Code, Line_Code From "+ dbListName +"_Scope where List_ID = '%s'", pListInfo->szListID);
+// 		pRs->Open((_bstr_t)strCmd, pConn.GetInterfacePtr(), adOpenStatic, adLockReadOnly, adCmdText);
+// 		while (!pRs->adoEOF)
+// 		{
+// 			pListInfo->pArrayStation->Add(GetFieldValue(pRs, "Station_Code"));
+// 			pRs->MoveNext();
+// 		}
+// 		pRs->Close();
 	}
 	catch (_com_error & e)
 	{

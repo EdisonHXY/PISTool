@@ -134,7 +134,29 @@ typedef struct
 	int iStatus;
 }Device_DownLoadInfo;
 
+typedef struct 
+{
+	CString stationCode; //站点编号
+	CString startTimeStr; //开始时间
+	CString stopTimeStr;  //停止时间
 
+}Station_RunTime;
+
+
+typedef struct
+{
+	CString stationCode; //站点编号
+	CString treminateStaion1;
+	CString firstTrain1;
+	CString lastTrain1;
+
+	CString treminateStaion2;
+	CString firstTrain2;
+	CString lastTrain2;
+
+	CString lineStr;
+
+}TainInfo_RunTime;
 
 class CDataBaseManager
 {
@@ -170,6 +192,14 @@ public:
 
 	 //设置下载状态
 	 BOOL SetDownloadStatus(CString listIDStr, CString DeviceCodeStr, int iDlStatus, CString strTime, int listType);
+
+	 //获取运营时间
+	 bool GetStationTimeInfo(vector<Station_RunTime> &staionTimeInfo);
+
+	 //获取列车运营时间 TrainInfo
+	 bool GetTrainInfoTime(vector<TainInfo_RunTime> &trainTimeInfoList, CString strLine);
+	 //设置列车的运营时间 TrainInfo
+	 bool SetTrainInfoTime(TainInfo_RunTime &trainTimeInfo, CString strLine);
 
 public:
 	//连接数据表
