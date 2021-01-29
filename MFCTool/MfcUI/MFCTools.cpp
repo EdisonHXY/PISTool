@@ -450,7 +450,7 @@ LRESULT CALLBACK CMFCTools::CloseWndProc(HWND hwnd, UINT message, WPARAM wParam,
 		{
 			return 0;
 		}
-
+		Shell_NotifyIcon(NIM_DELETE, &m_NotifyIcon); //ÔÚÍÐÅÌÇøÉ¾³ýÍ¼±ê
 	}
 
 	return CallWindowProc((WNDPROC)m_lOldProc_Close, hwnd, message, wParam, lParam);
