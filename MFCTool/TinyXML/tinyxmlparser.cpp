@@ -22,6 +22,7 @@ must not be misrepresented as being the original software.
 distribution.
 */
 #include "stdafx.h"
+
 #include <ctype.h>
 #include <stddef.h>
 
@@ -784,6 +785,7 @@ const char* TiXmlDocument::Parse( const char* p, TiXmlParsingData* prevData, TiX
 
 		p = SkipWhiteSpace( p, encoding );
 	}
+    m_encoding = encoding;
 
 	// Was this empty?
 	if ( !firstChild ) {

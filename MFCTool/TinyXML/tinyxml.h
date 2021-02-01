@@ -1393,10 +1393,14 @@ private:
 class TiXmlDocument : public TiXmlNode
 {
 public:
-	/// Create an empty document, that has no name.
-	TiXmlDocument();
+    /// Create an empty document, that has no name.
+    TiXmlDocument();
+    /// Create an empty document, that has no name.
+    TiXmlDocument(bool bBOM);
 	/// Create a document with a name. The name of the document is also the filename of the xml.
-	TiXmlDocument( const char * documentName );
+    TiXmlDocument(const char * documentName);
+    /// Create a document with a name. The name of the document is also the filename of the xml.
+    TiXmlDocument(const char * documentName, bool bBOM);
 
 	#ifdef TIXML_USE_STL
 	/// Constructor.
@@ -1425,6 +1429,8 @@ public:
 		file location. Streaming may be added in the future.
 	*/
 	bool LoadFile( FILE*, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING );
+	/** Load a file using the buffer data*/
+    bool LoadFile( char * pData, int iDataSize, TiXmlEncoding encoding);
 	/// Save a file using the given FILE*. Returns true if successful.
 	bool SaveFile( FILE* ) const;
 
@@ -1451,6 +1457,9 @@ public:
 	*/
 	const TiXmlElement* RootElement() const		{ return FirstChildElement(); }
 	TiXmlElement* RootElement()					{ return FirstChildElement(); }
+
+    /** Get encoding type */
+    TiXmlEncoding Encoding()    { return m_encoding; }
 
 	/** If an error occurs, Error will be set to true. Also,
 		- The ErrorId() will contain the integer identifier of the error (not generally useful)
@@ -1552,6 +1561,7 @@ private:
 	int tabsize;
 	TiXmlCursor errorLocation;
 	bool useMicrosoftBOM;		// the UTF-8 BOM were found when read. Note this, and try to write.
+    TiXmlEncoding m_encoding;
 };
 
 

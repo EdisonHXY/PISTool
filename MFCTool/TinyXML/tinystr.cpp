@@ -1,4 +1,3 @@
-#include "stdafx.h"
 /*
 www.sourceforge.net/projects/tinyxml
 
@@ -22,7 +21,7 @@ must not be misrepresented as being the original software.
 distribution.
 */
 
-
+#include "stdafx.h"
 #ifndef TIXML_USE_STL
 
 #include "tinystr.h"
