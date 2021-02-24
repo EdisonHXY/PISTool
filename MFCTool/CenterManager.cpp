@@ -4,6 +4,7 @@
 
 CCenterManager::CCenterManager()
 {
+	
 }
 
 
@@ -35,15 +36,35 @@ void CCenterManager::InitMFCUI(HICON icon, bool bStartMin)
 
 }
 
-bool CCenterManager::Start(RUNPARAM &pParam)
+bool CCenterManager::Start()
 {
-	bool bRet = true;
+	Stop();
+	
+	//保存参数
+	CMFCTools::GetInstance()->SaveIniSetting();
 
+	//记录参数
+	int nCount = CMFCTools::GetInstance()->m_iniListInfo.size();
+	CString strLog;
+	CString strTmp;
+	for (int i = 0 ; i < nCount;++i)
+	{
+		CMFCTools::OC_INI_INFO info = CMFCTools::GetInstance()->m_iniListInfo[i];
+		strTmp.Format("运行参数：(%s)=(%s) ", info.keyName, info.valueName);
+		strLog += strTmp;
+	}
+
+	RecoderLog(strLog);
+
+	bool bRet = true;
+	
+	RecoderLog("开始运行");
 	return bRet;
 }
 
 bool CCenterManager::Stop()
 {
+	RecoderLog("停止运行");
 	return true;
 }
 
