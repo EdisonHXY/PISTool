@@ -47,7 +47,7 @@ public:
 
 	void curl_easy_cleanup(void *curl)
 	{
-		auto fun = m_dllParser.GetFunction<void (void*)>("curl_easy_init");
+		auto fun = m_dllParser.GetFunction<void (void*)>("curl_easy_cleanup");
 		return fun(curl);
 	}
 	template<class T>
