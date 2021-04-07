@@ -1,0 +1,2 @@
+附件包含目录.\WSAndHttp
+使用WSAndHttpManager.h
