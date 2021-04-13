@@ -72,6 +72,40 @@ CString CMFCTools::GetVersionInfo(CString szExeFile)
 	return strVersion;
 }
 
+
+
+void CMFCTools::AddToMsgToListBox(CListTextBox &listBox, CString strLog, int nLevel /*= 0*/)
+{
+	
+	CTime tmCur = CTime::GetCurrentTime();
+	CString strLogMsg;
+	strLogMsg.Format("%s <-> %s -- %s", strLog, "asdasdasd", tmCur.Format("%Y-%m-%d %H:%M:%S"));
+	
+	COLORREF itemColor = RGB(10, 200, 10);
+	if (nLevel <=0)
+	{
+		itemColor = RGB(10, 200, 10);
+	}else if (nLevel ==1)
+	{
+		itemColor = RGB(200, 200, 10);
+	}
+	else {
+		itemColor = RGB(200, 10, 10);
+	}
+
+
+	listBox.SetCenter(false);
+
+	listBox.SetRedraw(FALSE);
+	if (listBox.GetCount() > 300)
+		listBox.DeleteString(0);
+
+	listBox.AddString(strLogMsg, itemColor);
+	listBox.SetRedraw(TRUE);
+
+	listBox.PostMessage(WM_VSCROLL, SB_BOTTOM, 0);
+}
+
 LRESULT CALLBACK CMFCTools::NewWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	switch (message) //判断消息类型

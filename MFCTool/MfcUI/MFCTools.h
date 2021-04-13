@@ -1,4 +1,5 @@
 #pragma once
+#include "ListTextBox.h"
 #include <vector>
 using namespace std;
 
@@ -80,6 +81,9 @@ public:
 	void SaveIniSetting();
 
 	CString GetVersionInfo(CString szExeFile);
+
+	//内嵌日志窗口
+	void AddToMsgToListBox(CListTextBox &listBox, CString strLog,int nLevel = 0);
 
 protected:
 	CStatusBarCtrl *m_statusBar;
