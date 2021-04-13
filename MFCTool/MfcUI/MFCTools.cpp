@@ -12,6 +12,12 @@ UINT CMFCTools::m_timerID = 1058;
 CWnd *CMFCTools::m_applyControl = NULL;
 vector<CMFCTools::OC_INI_INFO> CMFCTools::m_iniListInfo;
 
+#ifdef _WIN64 
+#define MYGWL_WNDPROC GWLP_WNDPROC
+#else 
+#define MYGWL_WNDPROC GWL_WNDPROC
+#endif
+
 CMFCTools::CMFCTools()
 {
 	m_statusBar = NULL;
@@ -241,7 +247,8 @@ void CMFCTools::TrayToBottom(HWND hwn, HICON icon, CString tipMsg, bool isStartM
 	//g_hMenu = CreatePopupMenu();//生成托盘菜单	
 	//AppendMenu(g_hMenu, MF_STRING, ID_EXIT, TEXT("退出"));
 
-	m_lOldProc = SetWindowLong(m_NotifyIcon.hWnd, GWL_WNDPROC, long(NewWndProc));
+	
+	m_lOldProc = SetWindowLong(m_NotifyIcon.hWnd, MYGWL_WNDPROC, long(NewWndProc));
 
 	if (isStartMin)
 	{
@@ -257,7 +264,7 @@ void CMFCTools::CancelTrayToBottom(HWND hwn)
 		return;
 	}
 	Shell_NotifyIcon(NIM_DELETE, &m_NotifyIcon); //在托盘区删除图标
-	SetWindowLong(hwn, GWL_WNDPROC, m_lOldProc);
+	SetWindowLong(hwn, MYGWL_WNDPROC, m_lOldProc);
 	m_lOldProc = -1;
 }
 
@@ -268,7 +275,7 @@ int CMFCTools::CloseTip(HWND hwn, CString tipStr)
 		return 0;
 	}
 	m_messageStr = tipStr;
-	m_lOldProc_Close = SetWindowLong(hwn, GWL_WNDPROC, long(CloseWndProc));
+	m_lOldProc_Close = SetWindowLong(hwn, MYGWL_WNDPROC, long(CloseWndProc));
 	return 0;
 }
 
@@ -279,7 +286,7 @@ void CMFCTools::CancelCloseTip(HWND hwn)
 		return;
 	}
 
-	SetWindowLong(hwn, GWL_WNDPROC, m_lOldProc_Close);
+	SetWindowLong(hwn, MYGWL_WNDPROC, m_lOldProc_Close);
 	m_lOldProc_Close = -1;
 }
 
