@@ -83,8 +83,12 @@ public:
 	CString GetVersionInfo(CString szExeFile);
 
 	//内嵌日志窗口
-	void AddToMsgToListBox(CListTextBox &listBox, CString strLog,int nLevel = 0);
+	void SetLogListBox(CListTextBox *listBox);
+	void AddToMsgToListBox(CString strLog,int nLevel = 0);
 
+	//外部打开一个路径
+	void OpenPath(const string &strPath,bool bFile = true);
+	void PrintFile(const string &strPath);
 protected:
 	CStatusBarCtrl *m_statusBar;
 	static long m_lOldProc;
@@ -95,6 +99,7 @@ protected:
 	CString m_iniFilePath;
 	static CWnd *m_applyControl;
 	static UINT m_timerID;
+	CListTextBox *m_listBox;
 private:
 	CMFCTools();
 	

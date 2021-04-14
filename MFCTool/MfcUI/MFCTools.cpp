@@ -21,7 +21,7 @@ vector<CMFCTools::OC_INI_INFO> CMFCTools::m_iniListInfo;
 CMFCTools::CMFCTools()
 {
 	m_statusBar = NULL;
-
+	m_listBox = 0;
 }
 
 
@@ -74,12 +74,22 @@ CString CMFCTools::GetVersionInfo(CString szExeFile)
 
 
 
-void CMFCTools::AddToMsgToListBox(CListTextBox &listBox, CString strLog, int nLevel /*= 0*/)
+void CMFCTools::SetLogListBox(CListTextBox *listBox)
 {
+	m_listBox = listBox;
+}
+
+void CMFCTools::AddToMsgToListBox(CString strLog, int nLevel /*= 0*/)
+{
+
+	if (!m_listBox)
+	{
+		return;
+	}
 	
 	CTime tmCur = CTime::GetCurrentTime();
 	CString strLogMsg;
-	strLogMsg.Format("%s <-> %s -- %s", strLog, "asdasdasd", tmCur.Format("%Y-%m-%d %H:%M:%S"));
+	strLogMsg.Format("%s:%s",  tmCur.Format("%H:%M:%S"),strLog);
 	
 	COLORREF itemColor = RGB(10, 200, 10);
 	if (nLevel <=0)
@@ -94,16 +104,26 @@ void CMFCTools::AddToMsgToListBox(CListTextBox &listBox, CString strLog, int nLe
 	}
 
 
-	listBox.SetCenter(false);
+	m_listBox->SetCenter(false);
 
-	listBox.SetRedraw(FALSE);
-	if (listBox.GetCount() > 300)
-		listBox.DeleteString(0);
+	m_listBox->SetRedraw(FALSE);
+	if (m_listBox->GetCount() > 300)
+		m_listBox->DeleteString(0);
 
-	listBox.AddString(strLogMsg, itemColor);
-	listBox.SetRedraw(TRUE);
+	m_listBox->AddString(strLogMsg, itemColor);
+	m_listBox->SetRedraw(TRUE);
 
-	listBox.PostMessage(WM_VSCROLL, SB_BOTTOM, 0);
+	m_listBox->PostMessage(WM_VSCROLL, SB_BOTTOM, 0);
+}
+
+void CMFCTools::OpenPath(const string &strPath,bool bFile)
+{
+	ShellExecute(NULL, bFile ? "open": "explore", strPath.data(), NULL, NULL, SW_SHOWNORMAL);
+}
+
+void CMFCTools::PrintFile(const string &strPath)
+{
+	ShellExecute(NULL,  "print", strPath.data(), NULL, NULL, SW_SHOWNORMAL);
 }
 
 LRESULT CALLBACK CMFCTools::NewWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
