@@ -139,16 +139,7 @@ CString CLogToFile_OC::GetLogFileName(void)
 	}
 	else
 	{
-		strFile.Format("%s%s-%d%s", m_szLogFile, time.Format("%Y.%m.%d"), time.GetHour() / (24 / max(m_iDayFileCount, 1)), ".log");
-// 		int nHoure = time.GetHour();
-// 		int tmpCount = nHoure / m_iDayFileCount;
-// 		int index = 0;
-// 		if (tmpCount != 0 )
-// 		{
-// 			index = nHoure / tmpCount;
-// 		}
-// 		
-// 		strFile.Format("%s-%d%s", time.Format("%Y.%m.%d"), index, ".log");
+		strFile.Format("%s-%d%s",time.Format("%Y.%m.%d"), time.GetHour() / (24 / max(m_iDayFileCount, 1)), ".log");
 
 	}
 	return strFile;

@@ -142,7 +142,10 @@ LRESULT CALLBACK CMFCTools::NewWndProc(HWND hwnd, UINT message, WPARAM wParam, L
 			}
 			else
 			{
-				CWnd::FromHandle(hwnd)->ShowWindow(SW_SHOW); //显示窗口
+				//CWnd::FromHandle(hwnd)->ShowWindow(SW_SHOW); //显示窗口
+				CWnd::FromHandle(hwnd)->ShowWindow(SW_SHOW);
+				CWnd::FromHandle(hwnd)->SetForegroundWindow();
+				CWnd::FromHandle(hwnd)->BringWindowToTop();
 			}
 
 		}
@@ -165,6 +168,7 @@ LRESULT CALLBACK CMFCTools::NewWndProc(HWND hwnd, UINT message, WPARAM wParam, L
 		{
 			//接收到最小化消息时主窗口隐藏 
 			CWnd::FromHandle(hwnd)->ShowWindow(SW_HIDE);
+			
 			return 0;
 		}
 
