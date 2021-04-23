@@ -35,7 +35,7 @@ CTcpServer::~CTcpServer()
 	WSACleanup();
 }
 
-int CTcpServer::StartServer( UINT nPort)
+bool CTcpServer::StartServer( UINT nPort)
 {
 	if (m_soServer == INVALID_SOCKET)
 	{
@@ -156,6 +156,16 @@ int CTcpServer::PingDevice(const char *szIP)
 	printf("Ping: %s status: %u.\n", szIP, pIcmpEcho->Status);
 
 	return bRetsult ? 0 : -1;
+}
+
+int CTcpServer::Send(SOCKET clientSc, const char *szData, int nLen)
+{
+	int nSend = send(clientSc, szData, nLen, 0);
+	if (nSend != nLen)
+	{
+		printf("");
+	}
+	return nLen;
 }
 
 void CTcpServer::ThreadExectCallBackFunc(UINT threadID, void *lparam)
@@ -287,7 +297,7 @@ void CTcpServer::HandleThread()
 				if (m_receiveCB)
 				{
 					buf[ret] = '\0';
-					m_receiveCB(inet_ntoa(name.sin_addr), buf, ret, m_receiveCBParam);
+					m_receiveCB(fdRead.fd_array[i],inet_ntoa(name.sin_addr), buf, ret, m_receiveCBParam);
 				}
 				//printf("\nRecv from [%s:%d] : %s\n", inet_ntoa(name.sin_addr), ntohs(name.sin_port), buf);
 			}
@@ -511,7 +521,7 @@ void CTcpClient::HandleSocketReceive()
 				if (m_receiveCB)
 				{
 					buf[ret] = '\0';
-					m_receiveCB(inet_ntoa(name.sin_addr), buf, ret,m_receiveCBParam);
+					m_receiveCB(m_soClient,inet_ntoa(name.sin_addr), buf, ret,m_receiveCBParam);
 				}
 
 			}

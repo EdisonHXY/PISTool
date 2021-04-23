@@ -20,12 +20,12 @@ public:
 		SocketStatus_Connect,
 		SocketStatus_Disconnect
 	};
-	typedef void(*fReceiveMsgWithSocketCallBack)(CString ipStr, char *szBuffer, UINT nLength, void *lparam);
+	typedef void(*fReceiveMsgWithSocketCallBack)(SOCKET clientSc,CString ipStr, char *szBuffer, UINT nLength, void *lparam);
 	typedef void(*fCloseSocketCallBack)(CString ipStr, void *lparam);
 	typedef void(*fSocketStatusCallBack)(CString clientIpAddress, SocketStatus nStatus, void *lparam);
 	
 	//开始
-	int StartServer( UINT nPort);
+	bool StartServer( UINT nPort);
 
 	//停止
 	int StopServer();
@@ -41,6 +41,9 @@ public:
 
 	//ping 设备 
 	int PingDevice(const char *szIP);
+
+	//发送
+	int Send(SOCKET clientSc,const char *szData, int nLen);
 
 private:
 	fReceiveMsgWithSocketCallBack m_receiveCB;
