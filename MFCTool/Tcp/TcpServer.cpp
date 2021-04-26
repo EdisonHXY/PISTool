@@ -90,6 +90,7 @@ void CTcpServer::DisConnectAll()
 {
 	for (int i = 0; i < m_clientSocketList.size(); i++) {
 		SOCKET &tmpS = m_clientSocketList[i];
+		deletePreMsg(tmpS);
 		if (tmpS != INVALID_SOCKET)
 		{
 			closesocket(tmpS);
@@ -102,6 +103,8 @@ void CTcpServer::DisConnectAll()
 	}
 
 	m_clientSocketList.clear();
+	
+
 }
 
 int CTcpServer::StopServer()
@@ -176,6 +179,8 @@ void CTcpServer::ThreadExectCallBackFunc(UINT threadID, void *lparam)
 
 void CTcpServer::CloseSocket(SOCKET s)
 {
+	deletePreMsg(s);
+
 	for (vector<SOCKET>::iterator iter = m_clientSocketList.begin();iter != m_clientSocketList.end(); )
 	{
 		if (*iter == s)
@@ -193,6 +198,9 @@ void CTcpServer::CloseSocket(SOCKET s)
 				closesocket(s);
 				*iter = INVALID_SOCKET;
 			}
+			
+
+
 			iter = m_clientSocketList.erase(iter);
 		}
 		else
@@ -263,6 +271,7 @@ void CTcpServer::HandleThread()
 				m_statusCB(inet_ntoa(addrAccept.sin_addr), SocketStatus_Connect, m_statusCBParam);
 			}
 
+			m_preMsgMap[soClient] = make_pair((char*)0, 0);
 			m_clientSocketList.push_back(soClient);
 		}
 
@@ -284,8 +293,8 @@ void CTcpServer::HandleThread()
 			int namelen = sizeof(sockaddr_in);
 			getpeername(fdRead.fd_array[i], (sockaddr *)&name, &namelen);
 
-			char buf[409600] = { 0 };
-			int len = 409599;
+			char buf[1024] = { 0 };
+			int len = 1023;
 			int ret = recv(fdRead.fd_array[i], buf, len, 0);
 			
 			if (ret <= 0 ) {
@@ -294,12 +303,35 @@ void CTcpServer::HandleThread()
 				
 			}
 			else {
+
+
 				if (m_receiveCB)
 				{
 					buf[ret] = '\0';
-					m_receiveCB(fdRead.fd_array[i],inet_ntoa(name.sin_addr), buf, ret, m_receiveCBParam);
+
+					char *outPut = 0;
+					int nOutLen = 0;
+					getNewDataMsg(fdRead.fd_array[i], buf, ret, &outPut, nOutLen);
+					
+					int nProLen = m_receiveCB(fdRead.fd_array[i], outPut, nOutLen, m_receiveCBParam);
+
+					if (nProLen > 0)
+					{
+						//保存未处理的数据
+						int nMovePos = nOutLen - nProLen;
+						savePreMsg(fdRead.fd_array[i], outPut + nMovePos, nProLen);
+
+					}
+
+					if (outPut)
+					{
+						delete[] outPut;
+						outPut = 0;
+					}
+					nOutLen = 0;
+					
 				}
-				//printf("\nRecv from [%s:%d] : %s\n", inet_ntoa(name.sin_addr), ntohs(name.sin_port), buf);
+				
 			}
 		
 			FD_CLR(fdRead.fd_array[i], &fdRead);
@@ -339,6 +371,97 @@ bool CTcpServer::LoadIcmpDll(void)
 	return true;
 }
 
+
+void CTcpServer::savePreMsg(SOCKET s, char *szMsg, int nLen)
+{
+	auto iter  =  m_preMsgMap.find(s);
+	if (iter != m_preMsgMap.end())
+	{
+		pair<char*, int> &msgInfo = iter->second;
+
+		if (msgInfo.first == 0)
+		{
+			char *szStr = new char[nLen];
+			memcpy(szStr, szMsg, nLen);
+			msgInfo = make_pair(szStr, nLen);
+		}
+		else
+		{
+			//数据还是不够
+			int nTotalLen = msgInfo.second + nLen;
+			
+			char *szStr = new char[nTotalLen];
+			//取出之前的数据 并删除
+			memcpy(szStr, msgInfo.first, msgInfo.second);
+			delete[] msgInfo.first;
+			msgInfo.first = 0;
+
+			memcpy(szStr + msgInfo.second, szMsg, nLen);
+
+			msgInfo = make_pair(szStr, nTotalLen);
+		}
+
+	}
+}
+
+void CTcpServer::deletePreMsg(SOCKET s)
+{
+	auto iter = m_preMsgMap.find(s);
+	if (iter != m_preMsgMap.end())
+	{
+		pair<char*, int> msgInfo = iter->second;
+
+		if (msgInfo.first != 0)
+		{
+			delete[] msgInfo.first;
+			msgInfo.first = 0;
+		}
+
+		msgInfo.second = 0;
+
+		m_preMsgMap.erase(s);
+	}
+
+}
+
+
+void CTcpServer::getNewDataMsg(SOCKET s, const char* szMgs, int nLen, char **szOutMsg, int &nOutLen)
+{
+	auto iter = m_preMsgMap.find(s);
+	if (iter != m_preMsgMap.end())
+	{
+		pair<char*, int> &msgInfo = iter->second;
+
+		if (msgInfo.first == 0)
+		{
+			*szOutMsg = new char[nLen];
+			memcpy(*szOutMsg, szMgs, nLen);
+			nOutLen = nLen;
+		}
+		else
+		{
+			nOutLen = msgInfo.second + nLen;
+
+			*szOutMsg = new char[nOutLen];
+			//取出之前的数据 并删除
+			memcpy(*szOutMsg, msgInfo.first, msgInfo.second);
+			delete[] msgInfo.first;
+			msgInfo.first = 0;
+			memcpy(*szOutMsg + msgInfo.second, szMgs, nLen);
+			
+			msgInfo.second = 0;
+
+		}
+
+	}
+	else
+	{
+		*szOutMsg = new char[nLen];
+		memcpy(*szOutMsg, szMgs, nLen);
+		nOutLen = nLen;
+	}
+
+}
 
 CTcpClient::CTcpClient():m_receiveThread(0)
 {
@@ -423,7 +546,11 @@ bool CTcpClient::ConnectServer(CString strServerIp, int nPort)
 	ul = 0;
 	iResult = ioctlsocket(m_soClient, FIONBIO, (unsigned long*)&ul);
 
-	m_receiveThread.StartRun();
+	if (m_receiveCB)
+	{
+		m_receiveThread.StartRun();
+	}
+
 	
 	return isConnect;
 }
@@ -456,7 +583,7 @@ int CTcpClient::Send(const char *szData, int nLen)
 	return nLen;
 }
 
-void CTcpClient::SetReceiveMsgCallBack(CTcpServer::fReceiveMsgWithSocketCallBack cb, void *lparam)
+void CTcpClient::SetReceiveMsgCallBack(CTcpServer::fReceiveClientMsgWithSocketCallBack cb, void *lparam)
 {
 	m_receiveCB = cb;
 	m_receiveCBParam = lparam;

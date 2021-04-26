@@ -6,6 +6,7 @@
 #include <WINSOCK2.H>
 #pragma comment(lib,"ws2_32.lib")
 #include "../MfcUI/ThreadCheck.h"
+#include <map>
 
 using namespace std;
 
@@ -20,7 +21,13 @@ public:
 		SocketStatus_Connect,
 		SocketStatus_Disconnect
 	};
-	typedef void(*fReceiveMsgWithSocketCallBack)(SOCKET clientSc,CString ipStr, char *szBuffer, UINT nLength, void *lparam);
+	//返回值是 剩余未处理的数据长度
+	typedef int(*fReceiveMsgWithSocketCallBack)(SOCKET clientSc, char *szInputBuffer, UINT nInputLength, void *lparam);
+	
+	//client
+	typedef int(*fReceiveClientMsgWithSocketCallBack)(SOCKET clientSc, CString ipStr,char *szInputBuffer, UINT nInputLength, void *lparam);
+
+
 	typedef void(*fCloseSocketCallBack)(CString ipStr, void *lparam);
 	typedef void(*fSocketStatusCallBack)(CString clientIpAddress, SocketStatus nStatus, void *lparam);
 	
@@ -54,6 +61,8 @@ private:
 
 	SOCKET m_soServer;
 	CThreadCheck m_thread;
+
+
 private:
 	static void ThreadExectCallBackFunc(UINT threadID, void *lparam);
 	void CloseSocket(SOCKET s);
@@ -67,6 +76,17 @@ private:
 	lpICMP_CreateFile Icmp_CreateFile;
 	lpICMP_CloseHandle Icmp_CloseHandle;
 	lpICMP_SendEcho   Icmp_SendEcho;
+
+private:
+	//黏包时的数据
+	map<SOCKET, pair<char*, int> > m_preMsgMap;
+
+	//保存数据
+	void savePreMsg(SOCKET s,char *szMsg, int nLen);
+
+	//清空数据
+	void deletePreMsg(SOCKET s);
+	void getNewDataMsg(SOCKET s,const char* szMgs, int nLen, char **szOutMsg, int &nOutLen);
 };
 
 
@@ -80,7 +100,7 @@ public:
 	void Disconnect();
 	int Send(const char *szData, int nLen);
 	//设置接收消息的回调
-	void SetReceiveMsgCallBack(CTcpServer::fReceiveMsgWithSocketCallBack cb, void *lparam);
+	void SetReceiveMsgCallBack(CTcpServer::fReceiveClientMsgWithSocketCallBack cb, void *lparam);
 	//设置连接的建立和 断开的回调
 	void SetSocketStatusCallBack(CTcpServer::fSocketStatusCallBack cb, void *lparam);
 
@@ -89,7 +109,7 @@ private:
 	CThreadCheck m_receiveThread;
 	bool m_isConnect;
 private:
-	CTcpServer::fReceiveMsgWithSocketCallBack m_receiveCB;
+	CTcpServer::fReceiveClientMsgWithSocketCallBack m_receiveCB;
 	void* m_receiveCBParam;
 
 	CTcpServer::fSocketStatusCallBack m_statusCB;
