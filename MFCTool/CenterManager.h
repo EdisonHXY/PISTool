@@ -1,6 +1,7 @@
 #pragma once
-#include "日志/LogHandle.h"
+#include "MfcUI/ThreadCheck.h"
 #include "MfcUI/MFCTools.h"
+#include "LogManager.h"
 
 class CCenterManager
 {
@@ -8,21 +9,24 @@ public:
 	CCenterManager();
 	~CCenterManager();
 
+	typedef struct __CenterParam
+	{
+
+
+
+	}CenterParam;
 
 	//初始化UI
 	void InitMFCUI(HICON icon, bool bStartMin = true);
 
-	//开始 参数会从ini中获取
-	bool Start();
+	//开始 
+	bool Start(const CenterParam &cenParam);
 	
 	//停止
 	bool Stop();
 
-protected:
-	 CLogHandle m_log;
-
-protected:
-	void RecoderLog(CString strLog, int nLevel = 0);
+private:
+	CenterParam m_params;
 
 };
 

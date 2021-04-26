@@ -8,7 +8,7 @@
 
 #include "log/LogHandle.h"
 #include "MfcUI/MFCTools.h"
-
+#include "MfcUI/ThreadCheck.h"
 class CLogManager
 {
 public:

@@ -10,6 +10,7 @@ CCenterManager::CCenterManager()
 
 CCenterManager::~CCenterManager()
 {
+	Stop();
 }
 
 void CCenterManager::InitMFCUI(HICON icon, bool bStartMin)
@@ -29,46 +30,26 @@ void CCenterManager::InitMFCUI(HICON icon, bool bStartMin)
 	//最小化
 	CMFCTools::GetInstance()->TrayToBottom(hd->m_hWnd, icon, strFileName, bStartMin);
 
-	//日志
-	m_log.SetSavePath(strDir + "//log//", "");
-
-	RecoderLog("初始化UI");
 
 }
 
-bool CCenterManager::Start()
+bool CCenterManager::Start(const CenterParam &cenParam)
 {
+	m_params = cenParam;
+
 	Stop();
 	
 	//保存参数
 	CMFCTools::GetInstance()->SaveIniSetting();
 
-	//记录参数
-	int nCount = CMFCTools::GetInstance()->m_iniListInfo.size();
-	CString strLog;
-	CString strTmp;
-	for (int i = 0 ; i < nCount;++i)
-	{
-		CMFCTools::OC_INI_INFO info = CMFCTools::GetInstance()->m_iniListInfo[i];
-		strTmp.Format("运行参数：(%s)=(%s) ", info.keyName, info.valueName);
-		strLog += strTmp;
-	}
-
-	RecoderLog(strLog);
 
 	bool bRet = true;
 	
-	RecoderLog("开始运行");
 	return bRet;
 }
 
 bool CCenterManager::Stop()
 {
-	RecoderLog("停止运行");
-	return true;
-}
 
-void CCenterManager::RecoderLog(CString strLog, int nLevel)
-{
-	m_log.WritLog(strLog, (CLogHandle::WRITETPYE)nLevel);
+	return true;
 }
