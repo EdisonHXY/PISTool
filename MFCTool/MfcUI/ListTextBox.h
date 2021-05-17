@@ -12,11 +12,12 @@ class CListTextBox : public CListBox
 public:
 	CListTextBox();
 	virtual ~CListTextBox();
+	
 	int AddString(LPCTSTR lpszItem, COLORREF itemColor = RGB(10, 200, 10));
 	void SetCenter(bool bCenter);
 private:
 	CString GetString(int iIndex);
-	
+	void ShowInfo(CListBox *pListBox, CString infoStr, COLORREF itemColor);
 private:
 	CFont m_ftText;
 	COLORREF m_colBk;

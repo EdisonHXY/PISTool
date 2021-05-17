@@ -21,17 +21,51 @@ CListTextBox::~CListTextBox()
 {
 
 }
-
-int CListTextBox::AddString(LPCTSTR lpszItem, COLORREF itemColor /*= RGB(10, 200, 10)*/)
+void  CListTextBox::ShowInfo(CListBox *pListBox, CString infoStr, COLORREF itemColor)
 {
-	// Add the string to the list box
-	int nIndex = CListBox::AddString(lpszItem);
+	CRect clientRect;
+	pListBox->GetClientRect(&clientRect);
+	int maxWidth = clientRect.Width();
 
-	// save color data
+	int len = infoStr.GetLength();
+
+	CFont *pFont = pListBox->GetFont();
+	CDC *pDC = pListBox->GetDC();
+
+	CFont *pOldFont = pDC->SelectObject(pFont);
+
+	CSize sz = pDC->GetTextExtent(infoStr, len);
+
+	while (sz.cx > maxWidth)
+	{
+		len--;
+		sz = pDC->GetTextExtent(infoStr, len);
+	}
+
+	pDC->SelectObject(pOldFont);
+
+	int nIndex = pListBox->AddString(infoStr.Left(len));
 	if (nIndex >= 0)
 		SetItemData(nIndex, itemColor);
 
-	return nIndex;
+	int strLen = infoStr.GetLength();
+	if (len != strLen)
+	{
+		ShowInfo(pListBox, infoStr.Right(strLen - len),itemColor);
+	}
+}
+int CListTextBox::AddString(LPCTSTR lpszItem, COLORREF itemColor /*= RGB(10, 200, 10)*/)
+{
+	ShowInfo(this, lpszItem, itemColor);
+	// Add the string to the list box
+// 	int nIndex = CListBox::AddString(lpszItem);
+// 
+// 	// save color data
+// 	if (nIndex >= 0)
+// 		SetItemData(nIndex, itemColor);
+// 
+// 	return nIndex;
+	return 0;
 }
 
 void CListTextBox::SetCenter(bool bCenter)
