@@ -56,7 +56,15 @@ void  CListTextBox::ShowInfo(CListBox *pListBox, CString infoStr, COLORREF itemC
 }
 int CListTextBox::AddString(LPCTSTR lpszItem, COLORREF itemColor /*= RGB(10, 200, 10)*/)
 {
-	ShowInfo(this, lpszItem, itemColor);
+	CString infoStr = lpszItem;
+	int len = infoStr.GetLength();
+	if (len > 256)
+	{
+		infoStr = infoStr.Left(256);
+		infoStr += "....";
+	}
+
+	ShowInfo(this, infoStr, itemColor);
 	// Add the string to the list box
 // 	int nIndex = CListBox::AddString(lpszItem);
 // 
