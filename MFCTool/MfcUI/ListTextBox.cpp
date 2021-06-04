@@ -14,6 +14,7 @@ CListTextBox::CListTextBox()
 	m_colBk = RGB(25, 0, 0);
 	m_brBk.CreateSolidBrush(m_colBk);
 	m_isCenter = true;
+	m_maxWidth = 0;
 
 }
 
@@ -23,27 +24,30 @@ CListTextBox::~CListTextBox()
 }
 void  CListTextBox::ShowInfo(CListBox *pListBox, CString infoStr, COLORREF itemColor)
 {
-	CRect clientRect;
-	pListBox->GetClientRect(&clientRect);
-	int maxWidth = clientRect.Width();
-
 	int len = infoStr.GetLength();
-
-	CFont *pFont = pListBox->GetFont();
+	
 	CDC *pDC = pListBox->GetDC();
-
+	if (!pDC)
+	{
+		return;
+	}
+	CFont *pFont = pListBox->GetFont();
+	if (!pFont)
+	{
+		return;
+	}
 	CFont *pOldFont = pDC->SelectObject(pFont);
 
 	CSize sz = pDC->GetTextExtent(infoStr, len);
 
-	while (sz.cx > maxWidth)
+	while (sz.cx > m_maxWidth)
 	{
 		len--;
 		sz = pDC->GetTextExtent(infoStr, len);
 	}
 
 	pDC->SelectObject(pOldFont);
-
+	ReleaseDC(pDC);
 	int nIndex = pListBox->AddString(infoStr.Left(len));
 	if (nIndex >= 0)
 		SetItemData(nIndex, itemColor);
@@ -56,6 +60,14 @@ void  CListTextBox::ShowInfo(CListBox *pListBox, CString infoStr, COLORREF itemC
 }
 int CListTextBox::AddString(LPCTSTR lpszItem, COLORREF itemColor /*= RGB(10, 200, 10)*/)
 {
+	if (m_maxWidth <=0)
+	{
+		CRect clientRect;
+		GetClientRect(&clientRect);
+		m_maxWidth = clientRect.Width();
+	}
+
+
 	CString infoStr = lpszItem;
 	int len = infoStr.GetLength();
 	if (len > 256)
@@ -63,6 +75,7 @@ int CListTextBox::AddString(LPCTSTR lpszItem, COLORREF itemColor /*= RGB(10, 200
 		infoStr = infoStr.Left(256);
 		infoStr += "....";
 	}
+
 
 	ShowInfo(this, infoStr, itemColor);
 	// Add the string to the list box

@@ -23,6 +23,7 @@ private:
 	COLORREF m_colBk;
 	CBrush m_brBk;
 	bool m_isCenter;
+	int m_maxWidth;
 public:
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CListTextBox)
