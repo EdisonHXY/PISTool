@@ -1,7 +1,8 @@
 #pragma once
+#include "afxdialogex.h"
 
-#include <afxcontrolbars.h>
 // CConfigDlg_Parent ¶Ô»°¿ò
+
 class CConfigDlg_Parent : public CDialogEx
 {
 	DECLARE_DYNAMIC(CConfigDlg_Parent)

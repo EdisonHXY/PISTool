@@ -4,7 +4,7 @@
 #include "stdafx.h"
 //#include "..//TosSvg.h"
 #include "ConfigDlg_Parent.h"
-#include "afxdialogex.h"
+
 
 
 // CConfigDlg_Parent ¶Ô»°¿ò

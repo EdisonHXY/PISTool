@@ -7,8 +7,8 @@
  * \author HXY10
  * \date 十月 2020
  */
-#include "TinyXML/tinyxml.h"
-#include "TinyXML/tinystr.h"
+#include "../TinyXML/tinyxml.h"
+#include "../TinyXML/tinystr.h"
 #include <vector>
 #include <string>
 using namespace std;
@@ -31,13 +31,10 @@ typedef struct
 
 }	SYSTEM_PARAM_Parent;
 
-typedef struct
+typedef struct __GHG_PARAM
 {
 	//系统参数
 	SYSTEM_PARAM_Parent *sysParam;
-
-
-
 
 	HCONTEXT context;
 	int		iOldType;
@@ -48,6 +45,20 @@ typedef struct
 	char	szErrorString[MAX_PATH];
 	char	szCurPath[MAX_PATH];
 	char	szOldPath[MAX_PATH];
+
+	__GHG_PARAM()
+	{
+
+		context = 0;
+		iOldType = 0;
+		bPlaying = FALSE;
+		bPause = FALSE;
+		bCleanScreenOnStop = FALSE;
+		uIndex = 0;
+		memset(szOldPath, 0, MAX_PATH);
+		memset(szCurPath, 0, MAX_PATH);
+		memset(szErrorString, 0, MAX_PATH);
+	}
 
 }	GHG_PARAM, *PGHG_PARAM;
 
