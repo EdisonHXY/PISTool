@@ -34,8 +34,6 @@ void CLogManager::RecordLog(const string &strLog, LOGTYPE lType /*= LOGTYPE_INFO
 
 	if (bWritConsole)
 	{
-		m_lock.lock();
 		CMFCTools::GetInstance()->AddToMsgToListBox(strLog.data(), (int)lType);
-		m_lock.unLock();
 	}
 }

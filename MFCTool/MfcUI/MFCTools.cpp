@@ -103,15 +103,12 @@ void CMFCTools::AddToMsgToListBox(CString strLog, int nLevel /*= 0*/)
 		itemColor = RGB(200, 10, 10);
 	}
 
+	LISTTEXTBOXTRSFERDATRA boxData;
+	boxData.itemColor = itemColor;
+	boxData.strText = strLogMsg;
+	boxData.bCenter = false;
 
-	m_listBox->SetCenter(false);
-
-	m_listBox->SetRedraw(FALSE);
-	if (m_listBox->GetCount() > 300)
-		m_listBox->DeleteString(0);
-
-	m_listBox->AddString(strLogMsg, itemColor);
-	m_listBox->SetRedraw(TRUE);
+	m_listBox->SendMessage(WM_ADDSTRINGDRAW, 0, (LPARAM)&boxData);
 
 	m_listBox->PostMessage(WM_VSCROLL, SB_BOTTOM, 0);
 }

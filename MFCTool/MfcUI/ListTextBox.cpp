@@ -7,6 +7,7 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+
 /////////////////////////////////////////////////////////////////////////////
 CListTextBox::CListTextBox()
 {
@@ -22,6 +23,23 @@ CListTextBox::~CListTextBox()
 {
 
 }
+
+
+afx_msg LRESULT CListTextBox::OnAddstringdraw(WPARAM wParam, LPARAM lParam)
+{
+	LISTTEXTBOXTRSFERDATRA data = *(LISTTEXTBOXTRSFERDATRA*)lParam;
+	SetCenter(data.bCenter);
+
+	SetRedraw(FALSE);
+	if (GetCount() > 300)
+		DeleteString(0);
+
+	AddString(data.strText.data(), data.itemColor);
+	SetRedraw(TRUE);
+
+	return 0;
+}
+
 void  CListTextBox::ShowInfo(CListBox *pListBox, CString infoStr, COLORREF itemColor)
 {
 	int len = infoStr.GetLength();
@@ -99,6 +117,7 @@ BEGIN_MESSAGE_MAP(CListTextBox, CListBox)
 	ON_WM_ERASEBKGND()
 	ON_WM_CTLCOLOR_REFLECT()
 	//}}AFX_MSG_MAP
+	ON_MESSAGE(WM_ADDSTRINGDRAW, &CListTextBox::OnAddstringdraw)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////

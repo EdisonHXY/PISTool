@@ -6,6 +6,17 @@
 #endif // _MSC_VER > 1000
 
 #define LVS_EX_DOUBLEBUFFER 0x00010000
+
+#define  WM_ADDSTRINGDRAW (WM_USER + 1026)
+
+typedef struct __LISTTEXTBOXTRSFERDATRA
+{
+	string strText;
+	COLORREF itemColor;
+	bool bCenter;
+
+}LISTTEXTBOXTRSFERDATRA;
+
 /////////////////////////////////////////////////////////////////////////////
 class CListTextBox : public CListBox
 {
@@ -13,9 +24,10 @@ public:
 	CListTextBox();
 	virtual ~CListTextBox();
 	
-	int AddString(LPCTSTR lpszItem, COLORREF itemColor = RGB(10, 200, 10));
+	
 	void SetCenter(bool bCenter);
 private:
+	int AddString(LPCTSTR lpszItem, COLORREF itemColor = RGB(10, 200, 10));
 	CString GetString(int iIndex);
 	void ShowInfo(CListBox *pListBox, CString infoStr, COLORREF itemColor);
 private:
@@ -39,6 +51,7 @@ protected:
 	//}}AFX_MSG
 
 	DECLARE_MESSAGE_MAP()
+	afx_msg LRESULT OnAddstringdraw(WPARAM wParam, LPARAM lParam);
 };
 
 /////////////////////////////////////////////////////////////////////////////
