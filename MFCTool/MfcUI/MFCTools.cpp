@@ -517,3 +517,62 @@ LRESULT CALLBACK CMFCTools::CloseWndProc(HWND hwnd, UINT message, WPARAM wParam,
 
 	return CallWindowProc((WNDPROC)m_lOldProc_Close, hwnd, message, wParam, lParam);
 }
+
+
+void CMFCTools::GetFilePath(vector<CString>& vFilePathList, CString strDir)
+{
+	CFileFind finder;
+	BOOL isNotEmpty = finder.FindFile(strDir + _T("*.*"));//总文件夹，开始遍历 
+	while (isNotEmpty)
+	{
+		isNotEmpty = finder.FindNextFile();//查找文件 
+		CString filename = finder.GetFilePath();//获取文件的路径，可能是文件夹，可能是文件 
+		if (!(finder.IsDirectory()))
+		{
+			//如果是文件则加入文件列表 
+			vFilePathList.push_back(filename);//将一个文件路径加入容器 
+		}
+		else
+		{
+			//递归遍历用户文件夹，跳过非用户文件夹 
+			if (!(finder.IsDots() || finder.IsHidden() || finder.IsSystem() || finder.IsTemporary() || finder.IsReadOnly()))
+			{
+				GetFilePath(vFilePathList, filename + _T("/"));
+			}
+		}
+	}
+}
+
+void CMFCTools::RecursiveDirectory(CString cstrDir) 
+{
+	if (cstrDir.GetLength() <= 3)//是根目录，无需创建目录
+	{
+		return;
+	}
+	if (cstrDir[cstrDir.GetLength() - 1] == '\\')   // 将路径改为目录
+	{
+		cstrDir.Delete(cstrDir.GetLength() - 1, 1);
+	}
+	// 修改文件属性
+	WIN32_FIND_DATA wfd;
+	HANDLE hFind = FindFirstFile(cstrDir, &wfd); // 查找
+	if (hFind != INVALID_HANDLE_VALUE)
+	{
+		FindClose(hFind);
+		if (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+			return;
+	}
+	// 创建当前目录的地目录失败
+	if (CreateDirectory(cstrDir, NULL) == false)
+	{// 退到上一级目录
+		CString wstrNewDir = cstrDir;
+		int n = wstrNewDir.ReverseFind('\\');
+		wstrNewDir = cstrDir.Left(n);
+
+		// 递归进入
+		RecursiveDirectory(wstrNewDir);  // 递归本函数，再创建目录
+										 // 递归退出后创建之前失败的目录
+		CreateDirectory(cstrDir, NULL);  // 递归返回，在存在的目录上再建目录
+	}// 多级目录创建成功
+}
+

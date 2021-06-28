@@ -89,7 +89,13 @@ public:
 	//外部打开一个路径
 	void OpenPath(const string &strPath,bool bFile = true);
 	void PrintFile(const string &strPath);
-protected:
+
+	//遍历一个目录中的文件
+	void GetFilePath(vector<CString>& vFilePathList, CString strDir);
+	
+	// 递归创建目录
+	void RecursiveDirectory(CString cstrDir); // 递归创建目录;
+public:
 	CStatusBarCtrl *m_statusBar;
 	static long m_lOldProc;
 	static NOTIFYICONDATA m_NotifyIcon;
@@ -105,6 +111,7 @@ private:
 	
 	static LRESULT CALLBACK NewWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 	static LRESULT CALLBACK CloseWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
+
 	static VOID CALLBACK TimerFunc(HWND, UINT, UINT_PTR, DWORD);
 };
 
